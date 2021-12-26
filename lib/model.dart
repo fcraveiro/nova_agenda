@@ -147,7 +147,87 @@ class AppEvent {
   }
 }
 
+class Agenda {
+  final String agendaUuId;
+  final int agendaPac;
+  final String agendaNome;
+  final String agendaTitulo;
+  final String agendaDesc;
+  final DateTime agendaData;
+  final String agendaHora;
+  final bool agendaCancelado;
+  final bool agendaTratado;
+  final bool agendaExcluido;
+  final bool agendaRemarcado;
+  Agenda({
+    required this.agendaUuId,
+    required this.agendaPac,
+    required this.agendaNome,
+    required this.agendaTitulo,
+    required this.agendaDesc,
+    required this.agendaData,
+    required this.agendaHora,
+    required this.agendaCancelado,
+    required this.agendaTratado,
+    required this.agendaExcluido,
+    required this.agendaRemarcado,
+  });
 
+  factory Agenda.fromJson(Map<String, dynamic> json) => Agenda(
+        agendaUuId: json['agendaUuId'],
+        agendaPac: json['agendaPac'],
+        agendaNome: json['agendaNome'],
+        agendaTitulo: json['agendaTitulo'],
+        agendaDesc: json['agendaDesc'],
+//        DateTime.parse(json["tanggalEvent"])
+        agendaData: DateTime.parse(json["agendaData"]),
+        agendaHora: json['agendaHora'],
+        agendaCancelado: json['agendaCancelado'],
+        agendaTratado: json['agendaTratado'],
+        agendaExcluido: json['agendaExcluido'],
+        agendaRemarcado: json['agendaRemarcado'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'agendaUuId': agendaUuId,
+        'agendaPac': agendaPac,
+        'agendaNome': agendaNome,
+        'agendaTitulo': agendaTitulo,
+        'agendaDesc': agendaDesc,
+        'agendaData': agendaData.millisecondsSinceEpoch,
+        'agendaHora': agendaHora,
+        'agendaCancelado': agendaCancelado,
+        'agendaTratado': agendaTratado,
+        'agendaExcluido': agendaExcluido,
+        'agendaRemarcado': agendaRemarcado,
+      };
+}
+
+Event eventFromJson(String str) => Event.fromJson(json.decode(str));
+
+class Event {
+  String status;
+  String message;
+  List<Agenda> data;
+
+  Event({
+    required this.status,
+    required this.message,
+    required this.data,
+  });
+
+  factory Event.fromJson(Map<String, dynamic> json) => Event(
+        status: json["status"],
+        message: json["message"],
+        data: List<Agenda>.from(json["data"].map((x) => Agenda.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+      };
+}
 
 
 
