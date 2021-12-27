@@ -1,0 +1,627 @@
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:nova_agenda/conectar.dart';
+import 'package:supabase/supabase.dart';
+import 'package:table_calendar/table_calendar.dart';
+
+import 'model.dart';
+
+class CustomTableCalendar extends StatefulWidget {
+  const CustomTableCalendar({Key? key}) : super(key: key);
+
+  @override
+  _CustomTableCalendarState createState() => _CustomTableCalendarState();
+}
+
+class _CustomTableCalendarState extends State<CustomTableCalendar> {
+  final client = SupabaseClient(supabaseUrl, supabaseKey);
+
+  final todaysDate = DateTime.now();
+  var _focusedCalendarDate = DateTime.now();
+  final _initialCalendarDate = DateTime(2000);
+  final _lastCalendarDate = DateTime(2050);
+  DateTime? selectedCalendarDate;
+  final titleController = TextEditingController();
+  final descpController = TextEditingController();
+  CalendarFormat format = CalendarFormat.month;
+
+  late Map<DateTime, List<MyEvents>> mySelectedEvents;
+
+  @override
+  void initState() {
+    selectedCalendarDate = _focusedCalendarDate;
+    mySelectedEvents = {};
+    lerAgora();
+    super.initState();
+  }
+
+  int numero = 0;
+
+  Future<List> lerAgora() async {
+    final response = await client.from('teste').select().execute();
+    if (response.error == null) {
+      final dataList = response.data as List;
+      log(dataList.length.toString());
+      for (var i = 0; i < dataList.length; i++) {
+        var evento = (Eventos.fromJson(dataList[i]));
+        numero = numero + 1;
+        DateTime campo = DateTime.utc(
+            evento.agendaData.year,
+            evento.agendaData.month,
+            evento.agendaData.day,
+            evento.agendaData.hour,
+            evento.agendaData.minute,
+            evento.agendaData.second);
+        if (mySelectedEvents[campo] != null) {
+          mySelectedEvents[campo]?.add(MyEvents(
+              eventTitle: evento.agendaTitulo, eventDescp: evento.agendaDesc));
+          _listOfDayEvents(campo);
+        } else {
+          mySelectedEvents[campo] = [
+            MyEvents(
+                eventTitle: evento.agendaTitulo, eventDescp: evento.agendaDesc)
+          ];
+          _listOfDayEvents(campo);
+        }
+        setState(() {
+          _listOfDayEvents(campo);
+        });
+        log('Data $numero ${campo.toString()}');
+      }
+      return (dataList);
+    }
+    log('Error fetching notes: ${response.error!.message}');
+    return [];
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descpController.dispose();
+    super.dispose();
+  }
+
+  List<MyEvents> _listOfDayEvents(DateTime dateTime) {
+    return mySelectedEvents[dateTime] ?? [];
+  }
+
+  _showAddEventDialog() async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('New Event'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildTextField(
+                      controller: titleController, hint: 'Enter Title'),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  buildTextField(
+                      controller: descpController, hint: 'Enter Description'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (titleController.text.isEmpty &&
+                        descpController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter title & description'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                      //Navigator.pop(context);
+                      return;
+                    } else {
+                      setState(() {
+                        if (mySelectedEvents[selectedCalendarDate] != null) {
+                          mySelectedEvents[selectedCalendarDate]?.add(MyEvents(
+                              eventTitle: titleController.text,
+                              eventDescp: descpController.text));
+                          _listOfDayEvents(selectedCalendarDate!);
+                        } else {
+                          mySelectedEvents[selectedCalendarDate!] = [
+                            MyEvents(
+                                eventTitle: titleController.text,
+                                eventDescp: descpController.text)
+                          ];
+                          _listOfDayEvents(selectedCalendarDate!);
+                        }
+                      });
+
+                      titleController.clear();
+                      descpController.clear();
+
+                      Navigator.pop(context);
+                      return;
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
+            ));
+  }
+
+  Widget buildTextField(
+      {String? hint, required TextEditingController controller}) {
+    return TextField(
+      controller: controller,
+      textCapitalization: TextCapitalization.words,
+      decoration: InputDecoration(
+        labelText: hint ?? '',
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.amber, width: 1.5),
+          borderRadius: BorderRadius.circular(
+            10.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+          borderRadius: BorderRadius.circular(
+            10.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        //      appBar: AppBar(
+        //        title: const Text('Custom Calendar'),
+        //      ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showAddEventDialog(),
+          label: const Text('Add Event'),
+          splashColor: Colors.black,
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.black,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Card(
+                margin: const EdgeInsets.all(0),
+                elevation: 5.0,
+                child: TableCalendar(
+                  locale: 'pt_BR',
+                  focusedDay: _focusedCalendarDate,
+                  firstDay: _initialCalendarDate,
+                  lastDay: _lastCalendarDate,
+//                  calendarFormat: CalendarFormat.month,
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Semana',
+                    CalendarFormat.twoWeeks: 'Mês',
+                    CalendarFormat.week: '2 Semanas',
+                  },
+                  calendarFormat: format,
+                  onFormatChanged: (CalendarFormat _format) {
+                    setState(() {
+                      format = _format;
+                    });
+                  },
+                  weekendDays: const [DateTime.sunday, 6],
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  eventLoader: _listOfDayEvents,
+                  headerStyle: HeaderStyle(
+                    headerMargin: const EdgeInsets.only(bottom: 15),
+                    titleCentered: true,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                    ),
+                    titleTextStyle:
+                        const TextStyle(color: Colors.pink, fontSize: 17.0),
+                    formatButtonTextStyle:
+                        const TextStyle(color: Colors.white, fontSize: 11.0),
+                    formatButtonDecoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(.5),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    leftChevronIcon: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.cyan,
+                      size: 26,
+                    ),
+                    rightChevronIcon: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.cyan,
+                      size: 26,
+                    ),
+                  ),
+                  daysOfWeekStyle: const DaysOfWeekStyle(
+                    weekendStyle: TextStyle(color: Colors.grey),
+                  ),
+                  selectedDayPredicate: (currentSelectedDate) {
+                    return (isSameDay(
+                        selectedCalendarDate!, currentSelectedDate));
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    // as per the documentation
+                    if (!isSameDay(selectedCalendarDate, selectedDay)) {
+                      setState(() {
+                        selectedCalendarDate = selectedDay;
+                        _focusedCalendarDate = focusedDay;
+                      });
+                    }
+                  },
+
+                  /*
+                  onDaySelected: (selectedDay, focusedDay) {
+                    // as per the documentation
+                    if (!isSameDay(selectedCalendarDate, selectedDay)) {
+                      setState(() {
+                        selectedCalendarDate = selectedDay;
+                        _focusedCalendarDate = focusedDay;
+                      });
+                    }
+                  },
+    */
+                ),
+              ),
+              ..._listOfDayEvents(selectedCalendarDate!).map(
+                (myEvents) => ListTile(
+                  leading: const Icon(
+                    Icons.done,
+                    color: Colors.indigo,
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 8.0,
+                    ),
+                    child: Text('Event Title:   ${myEvents.eventTitle}'),
+                  ),
+                  subtitle: Text('Description:   ${myEvents.eventDescp}'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyEvents {
+  final String eventTitle;
+  final String eventDescp;
+
+  MyEvents({required this.eventTitle, required this.eventDescp});
+
+  @override
+  String toString() => eventTitle;
+}
+
+
+/*
+
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:nova_agenda/conectar.dart';
+import 'package:supabase/supabase.dart';
+import 'package:table_calendar/table_calendar.dart';
+
+import 'model.dart';
+
+class CustomTableCalendar extends StatefulWidget {
+  const CustomTableCalendar({Key? key}) : super(key: key);
+
+  @override
+  _CustomTableCalendarState createState() => _CustomTableCalendarState();
+}
+
+class _CustomTableCalendarState extends State<CustomTableCalendar> {
+  final client = SupabaseClient(supabaseUrl, supabaseKey);
+
+  final todaysDate = DateTime.now();
+  var _focusedCalendarDate = DateTime.now();
+  final _initialCalendarDate = DateTime(2000);
+  final _lastCalendarDate = DateTime(2050);
+  DateTime? selectedCalendarDate;
+  final titleController = TextEditingController();
+  final descpController = TextEditingController();
+  CalendarFormat format = CalendarFormat.month;
+
+  late Map<DateTime, List<MyEvents>> mySelectedEvents;
+
+  @override
+  void initState() {
+    selectedCalendarDate = _focusedCalendarDate;
+    mySelectedEvents = {};
+    lerAgora();
+    super.initState();
+  }
+
+  int numero = 0;
+
+  Future<List> lerAgora() async {
+    final response = await client.from('teste').select().execute();
+    if (response.error == null) {
+      final dataList = response.data as List;
+      log(dataList.length.toString());
+      for (var i = 0; i < dataList.length; i++) {
+        var evento = (Eventos.fromJson(dataList[i]));
+        numero = numero + 1;
+        DateTime campo = DateTime.utc(
+            evento.agendaData.year,
+            evento.agendaData.month,
+            evento.agendaData.day,
+            evento.agendaData.hour,
+            evento.agendaData.minute,
+            evento.agendaData.second);
+        if (mySelectedEvents[campo] != null) {
+          mySelectedEvents[campo]?.add(MyEvents(
+              eventTitle: evento.agendaTitulo, eventDescp: evento.agendaDesc));
+          _listOfDayEvents(campo);
+        } else {
+          mySelectedEvents[campo] = [
+            MyEvents(
+                eventTitle: evento.agendaTitulo, eventDescp: evento.agendaDesc)
+          ];
+          _listOfDayEvents(campo);
+        }
+        setState(() {
+          _listOfDayEvents(campo);
+        });
+        log('Data $numero ${campo.toString()}');
+      }
+      return (dataList);
+    }
+    log('Error fetching notes: ${response.error!.message}');
+    return [];
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descpController.dispose();
+    super.dispose();
+  }
+
+  List<MyEvents> _listOfDayEvents(DateTime dateTime) {
+    return mySelectedEvents[dateTime] ?? [];
+  }
+
+  _showAddEventDialog() async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('New Event'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildTextField(
+                      controller: titleController, hint: 'Enter Title'),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  buildTextField(
+                      controller: descpController, hint: 'Enter Description'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (titleController.text.isEmpty &&
+                        descpController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter title & description'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                      //Navigator.pop(context);
+                      return;
+                    } else {
+                      setState(() {
+                        if (mySelectedEvents[selectedCalendarDate] != null) {
+                          mySelectedEvents[selectedCalendarDate]?.add(MyEvents(
+                              eventTitle: titleController.text,
+                              eventDescp: descpController.text));
+                          _listOfDayEvents(selectedCalendarDate!);
+                        } else {
+                          mySelectedEvents[selectedCalendarDate!] = [
+                            MyEvents(
+                                eventTitle: titleController.text,
+                                eventDescp: descpController.text)
+                          ];
+                          _listOfDayEvents(selectedCalendarDate!);
+                        }
+                      });
+
+                      titleController.clear();
+                      descpController.clear();
+
+                      Navigator.pop(context);
+                      return;
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
+            ));
+  }
+
+  Widget buildTextField(
+      {String? hint, required TextEditingController controller}) {
+    return TextField(
+      controller: controller,
+      textCapitalization: TextCapitalization.words,
+      decoration: InputDecoration(
+        labelText: hint ?? '',
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.amber, width: 1.5),
+          borderRadius: BorderRadius.circular(
+            10.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+          borderRadius: BorderRadius.circular(
+            10.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        //      appBar: AppBar(
+        //        title: const Text('Custom Calendar'),
+        //      ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showAddEventDialog(),
+          label: const Text('Add Event'),
+          splashColor: Colors.black,
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.black,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Card(
+                margin: const EdgeInsets.all(0),
+                elevation: 5.0,
+                child: TableCalendar(
+                  locale: 'pt_BR',
+                  focusedDay: _focusedCalendarDate,
+                  firstDay: _initialCalendarDate,
+                  lastDay: _lastCalendarDate,
+//                  calendarFormat: CalendarFormat.month,
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Semana',
+                    CalendarFormat.twoWeeks: 'Mês',
+                    CalendarFormat.week: '2 Semanas',
+                  },
+                  calendarFormat: format,
+                  onFormatChanged: (CalendarFormat _format) {
+                    setState(() {
+                      format = _format;
+                    });
+                  },
+                  weekendDays: const [DateTime.sunday, 6],
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  eventLoader: _listOfDayEvents,
+                  headerStyle: HeaderStyle(
+                    headerMargin: const EdgeInsets.only(bottom: 15),
+                    titleCentered: true,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                    ),
+                    titleTextStyle:
+                        const TextStyle(color: Colors.pink, fontSize: 17.0),
+                    formatButtonTextStyle:
+                        const TextStyle(color: Colors.white, fontSize: 11.0),
+                    formatButtonDecoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(.5),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    leftChevronIcon: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.cyan,
+                      size: 26,
+                    ),
+                    rightChevronIcon: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.cyan,
+                      size: 26,
+                    ),
+                  ),
+                  daysOfWeekStyle: const DaysOfWeekStyle(
+                    weekendStyle: TextStyle(color: Colors.grey),
+                  ),
+                  selectedDayPredicate: (currentSelectedDate) {
+                    return (isSameDay(
+                        selectedCalendarDate!, currentSelectedDate));
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    // as per the documentation
+                    if (!isSameDay(selectedCalendarDate, selectedDay)) {
+                      setState(() {
+                        selectedCalendarDate = selectedDay;
+                        _focusedCalendarDate = focusedDay;
+                      });
+                    }
+                  },
+
+                  /*
+                  onDaySelected: (selectedDay, focusedDay) {
+                    // as per the documentation
+                    if (!isSameDay(selectedCalendarDate, selectedDay)) {
+                      setState(() {
+                        selectedCalendarDate = selectedDay;
+                        _focusedCalendarDate = focusedDay;
+                      });
+                    }
+                  },
+    */
+                ),
+              ),
+              ..._listOfDayEvents(selectedCalendarDate!).map(
+                (myEvents) => ListTile(
+                  leading: const Icon(
+                    Icons.done,
+                    color: Colors.indigo,
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 8.0,
+                    ),
+                    child: Text('Event Title:   ${myEvents.eventTitle}'),
+                  ),
+                  subtitle: Text('Description:   ${myEvents.eventDescp}'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyEvents {
+  final String eventTitle;
+  final String eventDescp;
+
+  MyEvents({required this.eventTitle, required this.eventDescp});
+
+  @override
+  String toString() => eventTitle;
+}
+
+
+*/

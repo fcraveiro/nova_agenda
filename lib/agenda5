@@ -7,6 +7,8 @@ import 'package:supabase/supabase.dart';
 
 String eventToJson(Event data) => json.encode(data.toJson());
 
+//final _selectedEvents = [];
+
 const supabaseUrl = 'https://xrhyhsbetlnzksauwrvi.supabase.co';
 const supabaseKey =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzODA3NTI4MywiZXhwIjoxOTUzNjUxMjgzfQ.gsz31qxeQ_h6R_93rthZwynvz1i8jNrXLz30JaFprqA';
@@ -71,9 +73,11 @@ class _Teste5State extends State<Teste5> {
   void initState() {
 //    final _selectedDay = DateTime.now();
     _selectedEvents = [];
+
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       getTask1().then((val) => setState(() {
             _events = val;
+//            _selectedEvents = val;
           }));
       //print( ' ${_events.toString()} ');
     });
@@ -81,7 +85,39 @@ class _Teste5State extends State<Teste5> {
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+  ///
+  ///
+  ///
+  ///
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('jj'),
+      ),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - 200,
+        child: ListView(
+          children: _selectedEvents
+              .map((event) => Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0.8),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: ListTile(
+                      title: Text(event[1].agendaData.toString()),
+                      onTap: () => log('  $event tapped!'),
+                    ),
+                  ))
+              .toList(),
+        ),
+      ),
+    );
+  }
 }
 
 /*
@@ -296,6 +332,8 @@ class Datum {
 
     return mapFetch;
   }
+
+
   Widget _buildEventList() {
     return ListView(
       children: _selectedEvents

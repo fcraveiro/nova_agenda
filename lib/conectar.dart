@@ -26,12 +26,14 @@ class Conecta {
 
   Future getAgenda() async {
     log('Leu Agenda 4');
+    /*
     final response = await client.from('teste').select().execute();
     if (response.error == null) {
       final List<AppEvent> dataList = response as List<AppEvent>;
       return (dataList);
     }
     log('Error fetching notes: ${response.error!.message}');
+*/
     return [];
   }
 
