@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:nova_agenda/conectar.dart';
 import 'package:supabase/supabase.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -32,6 +34,9 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
     selectedCalendarDate = _focusedCalendarDate;
     mySelectedEvents = {};
     lerAgora();
+    setState(() {
+      selectedCalendarDate = _focusedCalendarDate;
+    });
     super.initState();
   }
 
@@ -217,21 +222,28 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        //      appBar: AppBar(
-        //        title: const Text('Custom Calendar'),
-        //      ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _showAddEventDialog(),
-          label: const Text('Add Event'),
-          splashColor: Colors.black,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Custom Calendar'),
+        centerTitle: true,
+        actions: const [
+          Icon(Icons.add),
+          SizedBox(
+            width: 10,
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showAddEventDialog(),
+        label: const Text('Add Event'),
+        splashColor: Colors.black,
 //          backgroundColor: Colors.amber,
-          foregroundColor: Colors.black,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        foregroundColor: Colors.black,
+      ),
+      body: SafeArea(
+        child: Column(
+//          mainAxisAlignment: MainAxisAlignment.start,
+//          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TableCalendar(
               locale: 'pt_BR',
@@ -259,8 +271,13 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                 return (isSameDay(selectedCalendarDate!, currentSelectedDate));
               },
               onDaySelected: (selectedDay, focusedDay) {
-                // as per the documentation
+                // as per the documentation currentSelectedDate
                 if (!isSameDay(selectedCalendarDate, selectedDay)) {
+                  setState(() {
+                    selectedCalendarDate = selectedDay;
+                    _focusedCalendarDate = focusedDay;
+                  });
+                } else {
                   setState(() {
                     selectedCalendarDate = selectedDay;
                     _focusedCalendarDate = focusedDay;
@@ -325,7 +342,7 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Colors.grey.withOpacity(0.9),
                     spreadRadius: 3,
                     blurRadius: 9,
                     offset: const Offset(0, 6), // changes position of shadow
@@ -338,7 +355,141 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
               height: 1,
               color: Color(0xFFBDBDBD),
             ),
-            ..._listOfDayEvents(selectedCalendarDate!).map(
+            Expanded(
+              child: tata(selectedCalendarDate),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  tata(selectedDay) {
+    List<MyEvents> jojo = _listOfDayEvents(selectedDay);
+    log(jojo.toString());
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 10, right: 2, left: 2, bottom: 10),
+      itemCount: jojo.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: 65,
+          color: Colors.amber,
+          margin: const EdgeInsets.only(
+            top: 6,
+            left: 10,
+            right: 10,
+          ),
+          child: Slidable(
+            groupTag: '1',
+            key: const ValueKey(0),
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {
+/*
+                                  remarcarAgenda(
+                                      context, value[index].agendaUuId);
+                                  setState(() {});
+*/
+                  },
+                  backgroundColor: const Color(0xFF7BC043),
+                  foregroundColor: Colors.white,
+                  icon: Icons.calendar_today_rounded,
+                  label: 'Remarcar',
+                ),
+                SlidableAction(
+                  onPressed: (context) async {
+/*
+
+                                  await apagarAgenda(
+                                      context, value[index].agendaUuId);
+                                  setState(() {
+                                    selectedEvents.clear();
+                                    gerarEvento();
+                                    const Scaffold();
+                                  });
+  */
+                  },
+                  backgroundColor: const Color(0xFF0392CF),
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Apagar',
+                ),
+              ],
+            ),
+            child: exibe(jojo, index),
+          ),
+        );
+      },
+    );
+  }
+
+  exibe(value, index) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 65,
+//                                  margin: const EdgeInsets.only(right: 10),
+      color: const Color(0xFFD6D6D6),
+      child: ListTile(
+        dense: true,
+        onTap: () => {
+          //      selectedEvents = {},
+          //      gerarEvento(),
+          log(
+            value[index].agendaNome,
+          ),
+        },
+        title: Text(
+          value[index].agendaNome,
+          style: const TextStyle(
+            fontSize: 16,
+            //                                        color: Colors.blue.shade800,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          value[index].agendaTitulo,
+        ),
+        leading: Container(
+          height: 40,
+          width: 50,
+          margin: const EdgeInsets.only(top: 0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).highlightColor,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                DateFormat("dd/MM").format(value[index].agendaData),
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+/*
+
+//          leading: const Icon(Icons.list),
+//            title: Text(jojo[index].eventTitle),
+//            subtitle: Text(jojo[index].eventDescp),
+//          trailing: Text("$index"),
+
+
+
+            ..._listOfDayEvents(_focusedCalendarDate).map(
               (myEvents) => Expanded(
                 child: ListTile(
                   leading: const Icon(
@@ -349,15 +500,11 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                     padding: const EdgeInsets.only(
                       bottom: 8.0,
                     ),
-                    child: Text('Event Title:   ${myEvents.agendaTitulo}'),
+                    child: Text(myEvents.agendaTitulo),
                   ),
-                  subtitle: Text('Description:   ${myEvents.agendaDesc}'),
+                  subtitle: Text(myEvents.agendaDesc),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+
+            */
