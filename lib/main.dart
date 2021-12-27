@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:nova_agenda/agenda6.dart';
+import 'package:nova_agenda/teste7.dart';
 
 void main() async {
   //await findSystemLocale();
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         Locale('pt', 'BR'), //
       ],
       locale: Locale('pt', 'BR'),
-      home: CustomTableCalendar(),
+      home: Teste7(),
     );
   }
 }

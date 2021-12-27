@@ -226,20 +226,27 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
       appBar: AppBar(
         title: const Text('Custom Calendar'),
         centerTitle: true,
-        actions: const [
-          Icon(Icons.add),
-          SizedBox(
+        actions: [
+          InkWell(
+            onTap: () => _showAddEventDialog(),
+            child: const Icon(Icons.add),
+          ),
+          const SizedBox(
             width: 10,
           )
         ],
       ),
+/*
       floatingActionButton: FloatingActionButton.extended(
+
         onPressed: () => _showAddEventDialog(),
         label: const Text('Add Event'),
         splashColor: Colors.black,
 //          backgroundColor: Colors.amber,
         foregroundColor: Colors.black,
       ),
+*/
+
       body: SafeArea(
         child: Column(
 //          mainAxisAlignment: MainAxisAlignment.start,
