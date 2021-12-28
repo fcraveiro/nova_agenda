@@ -48,6 +48,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
         .from('teste')
         .select()
         .filter('agendaExcluido', 'eq', false)
+        .order('agendaHora', ascending: true)
         .execute();
     if (response.error == null) {
       final dataList = response.data as List;
@@ -72,12 +73,13 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
             agendaData: campo,
             agendaNome: evento.agendaNome,
             agendaHora: evento.agendaHora,
+            agendaMinuto: evento.agendaMinuto,
             agendaPac: evento.agendaPac,
             agendaUuId: evento.agendaUuId,
           ));
-          TimeOfDay time2 = const TimeOfDay(hour: 18, minute: 00);
+//          TimeOfDay time2 = const TimeOfDay(hour: 18, minute: 00);
 //          DateTime dateTimew = DateTime.parse('2021-12-25 11:59');
-          var hour = time2.hour;
+          var hour = evento.agendaHora;
           if (hour == 12) {
             log('Tarde');
           } else if (hour == 18) {
@@ -104,10 +106,25 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
               agendaData: campo,
               agendaNome: evento.agendaNome,
               agendaHora: evento.agendaHora,
+              agendaMinuto: evento.agendaMinuto,
               agendaPac: evento.agendaPac,
               agendaUuId: evento.agendaUuId,
             )
           ];
+          var hour = evento.agendaHora;
+          if (hour == 12) {
+            log('Tarde');
+          } else if (hour == 18) {
+            log('Noite');
+          } else if (hour < 8) {
+            log('Madrugada');
+          } else if (hour < 12) {
+            log('Manhã');
+          } else if (hour > 18) {
+            log('Noite');
+          } else {
+            log('Tarde');
+          }
           _listOfDayEvents(campo);
         }
         setState(() {
@@ -177,7 +194,8 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                             agendaTratado: false,
                             agendaData: DateTime.now(),
                             agendaNome: 'lll',
-                            agendaHora: 'now()',
+                            agendaHora: 14,
+                            agendaMinuto: 15,
                             agendaPac: 1,
                             agendaUuId: 'sjahsadkjhajshjksad',
                           ));
@@ -193,7 +211,8 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                               agendaTratado: false,
                               agendaData: DateTime.now(),
                               agendaNome: 'lll',
-                              agendaHora: 'now()',
+                              agendaHora: 19,
+                              agendaMinuto: 55,
                               agendaPac: 1,
                               agendaUuId: 'sjahsadkjhajshjksad',
                             )
@@ -303,21 +322,26 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(6.0),
                 ),
+                decoration: const BoxDecoration(
+                    //  color: Colors.amber,
+                    ),
                 formatButtonTextStyle: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
                 ),
                 formatButtonShowsNext: false,
               ),
-              calendarStyle: const CalendarStyle(
+              calendarStyle: CalendarStyle(
                 canMarkersOverflow: true,
-                todayDecoration: BoxDecoration(
+                markerDecoration: BoxDecoration(
+                    color: Colors.grey.shade500, shape: BoxShape.circle),
+                todayDecoration: const BoxDecoration(
                   color: Colors.amber,
                 ),
-                selectedDecoration: BoxDecoration(
+                selectedDecoration: const BoxDecoration(
                   color: Colors.pink,
                 ),
-                todayTextStyle: TextStyle(
+                todayTextStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25.0,
                     color: Colors.black),
@@ -382,7 +406,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
 //    log('Data certa ${selectedDay.toString()}');
     List<Agenda> jojo = _listOfDayEvents(selectedDay);
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 10, right: 2, left: 2, bottom: 10),
+      padding: const EdgeInsets.only(top: 10, right: 0, left: 0, bottom: 10),
       itemCount: jojo.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
@@ -391,8 +415,8 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
           color: Colors.amber,
           margin: const EdgeInsets.only(
             top: 6,
-            left: 10,
-            right: 10,
+            left: 5,
+            right: 5,
           ),
           child: Slidable(
             groupTag: '1',
@@ -434,45 +458,69 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
               width: MediaQuery.of(context).size.width,
               height: 65,
               color: const Color(0xFFD6D6D6),
-              child: ListTile(
-                dense: true,
-                onTap: () => {
-                  //      selectedEvents = {},
-                  //      gerarEvento(),
-//                  log(jojo[index].agendaNome),
-                },
-                title: Text(
-                  jojo[index].agendaNome,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  jojo[index].agendaTitulo,
-                ),
-                leading: Container(
-                  height: 40,
-                  width: 50,
-                  margin: const EdgeInsets.only(top: 0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).highlightColor,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        DateFormat("dd/MM").format(jojo[index].agendaData),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                      Container(
+                        width: 15,
+                        height: 65,
+//                        color: Colors.blue,
+                        color: corDaHora(jojo[index]
+                            .agendaHora), // jojo[index].agendaHora == ,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 25,
+                        height: 65,
+//                        color: Colors.amberAccent,
+                        child: ListTile(
+                          dense: true,
+                          onTap: () => {
+                            //      selectedEvents = {},
+                            //      gerarEvento(),
+//                  log(jojo[index].agendaNome),
+                          },
+                          title: Text(
+                            jojo[index].agendaNome,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: Text(
+                            jojo[index].agendaTitulo,
+                          ),
+                          leading: Container(
+                            height: 40,
+                            width: 50,
+                            margin: const EdgeInsets.only(top: 0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).highlightColor,
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  DateFormat("dd/MM")
+                                      .format(jojo[index].agendaData),
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          trailing: Text(
+                            jojo[index].agendaHora.toString(),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
             ),
           ),
@@ -518,4 +566,27 @@ apagarAgenda(BuildContext context, uuid) async {
 
 remarcarAgenda(BuildContext context, uuid) {
   log('Remarcar : $uuid');
+}
+
+corDaHora(agendaHora) {
+  var hour = agendaHora;
+  if (hour == 12) {
+    log('Tarde');
+    return Colors.green.shade700;
+  } else if (hour == 18) {
+    log('Noite');
+    return Colors.grey.shade700;
+  } else if (hour < 8) {
+    log('Madrugada');
+    return Colors.black;
+  } else if (hour < 12) {
+    log('Manhã');
+    return Colors.yellow.shade700;
+  } else if (hour > 18) {
+    log('Noite');
+    return Colors.grey.shade700;
+  } else {
+    log('Tarde');
+    return Colors.green.shade700;
+  }
 }

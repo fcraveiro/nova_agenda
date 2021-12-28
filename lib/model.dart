@@ -5,7 +5,8 @@ class Agenda {
   final String agendaTitulo;
   final String agendaDesc;
   final DateTime agendaData;
-  final String agendaHora;
+  final int agendaHora;
+  final int agendaMinuto;
   final bool agendaCancelado;
   final bool agendaTratado;
   final bool agendaExcluido;
@@ -19,6 +20,7 @@ class Agenda {
     required this.agendaDesc,
     required this.agendaData,
     required this.agendaHora,
+    required this.agendaMinuto,
     required this.agendaCancelado,
     required this.agendaExcluido,
     required this.agendaTratado,
@@ -32,7 +34,8 @@ class Agenda {
         agendaTitulo: json['agendaTitulo'].toString(),
         agendaDesc: json['agendaDesc'].toString(),
         agendaData: DateTime.parse(json["agendaData"]),
-        agendaHora: json["agendaHora"].toString(),
+        agendaHora: json["agendaHora"],
+        agendaMinuto: json["agendaMinuto"],
         agendaCancelado: json["agendaCancelado"],
         agendaTratado: json["agendaTratado"],
         agendaRemarcado: json["agendaRemarcado"],
@@ -47,6 +50,7 @@ class Agenda {
         "agendaDesc": agendaDesc,
         "agendaData": agendaData,
         "agendaHora": agendaHora,
+        "agendaMinuto": agendaMinuto,
         "agendaCancelado": agendaCancelado,
         "agendaTratado": agendaTratado,
         "agendaExcluido": agendaExcluido,
@@ -62,6 +66,7 @@ class Agenda {
       agendaDesc: data['agendaDesc'],
       agendaData: data['agendaData'],
       agendaHora: data['agendaHora'],
+      agendaMinuto: data['agendaMinuto'],
       agendaCancelado: data['agendaCancelado'],
       agendaRemarcado: data['agendaRemarcado'],
       agendaExcluido: data['agendaExcluido'],
