@@ -222,3 +222,33 @@ onDaySelected: (date, events,holidays) {
           decodeMap(json.decode(campos.getString("events") ?? "{}")));
 */
 
+/*
+
+
+
+//          leading: const Icon(Icons.list),
+//            title: Text(jojo[index].eventTitle),
+//            subtitle: Text(jojo[index].eventDescp),
+//          trailing: Text("$index"),
+
+
+
+            ..._listOfDayEvents(_focusedCalendarDate).map(
+              (Agenda) => Expanded(
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.done,
+                    color: Colors.indigo,
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 8.0,
+                    ),
+                    child: Text(Agenda.agendaTitulo),
+                  ),
+                  subtitle: Text(Agenda.agendaDesc),
+                ),
+              ),
+            ),
+
+            */

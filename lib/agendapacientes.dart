@@ -5,17 +5,16 @@ import 'package:intl/intl.dart';
 import 'package:nova_agenda/conectar.dart';
 import 'package:supabase/supabase.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import 'model.dart';
 
-class CustomTableCalendar extends StatefulWidget {
-  const CustomTableCalendar({Key? key}) : super(key: key);
+class AgendaPacientes extends StatefulWidget {
+  const AgendaPacientes({Key? key}) : super(key: key);
 
   @override
-  _CustomTableCalendarState createState() => _CustomTableCalendarState();
+  _AgendaPacientesState createState() => _AgendaPacientesState();
 }
 
-class _CustomTableCalendarState extends State<CustomTableCalendar> {
+class _AgendaPacientesState extends State<AgendaPacientes> {
   final client = SupabaseClient(supabaseUrl, supabaseKey);
 
   final todaysDate = DateTime.now();
@@ -27,29 +26,34 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
   final descpController = TextEditingController();
   CalendarFormat format = CalendarFormat.month;
 
-  late Map<DateTime, List<MyEvents>> mySelectedEvents;
+  late Map<DateTime, List<Agenda>> mySelectedEvents;
 
   @override
   void initState() {
     selectedCalendarDate = _focusedCalendarDate;
     mySelectedEvents = {};
     lerAgora();
+    var aux = DateFormat("yyyy-MM-dd").format(todaysDate) + ' 00:00:00.000Z';
+    var aux2 = aux.toString();
+    DateTime teste = DateTime.parse(aux2);
+    selectedCalendarDate = teste;
     setState(() {
-      selectedCalendarDate = _focusedCalendarDate;
+      tata(selectedCalendarDate);
     });
     super.initState();
   }
 
-  int numero = 0;
-
   Future<List> lerAgora() async {
-    final response = await client.from('teste').select().execute();
+    final response = await client
+        .from('teste')
+        .select()
+        .filter('agendaExcluido', 'eq', false)
+        .execute();
     if (response.error == null) {
       final dataList = response.data as List;
       log(dataList.length.toString());
       for (var i = 0; i < dataList.length; i++) {
-        var evento = (Eventos.fromJson(dataList[i]));
-        numero = numero + 1;
+        var evento = (Agenda.fromJson(dataList[i]));
         DateTime campo = DateTime.utc(
             evento.agendaData.year,
             evento.agendaData.month,
@@ -58,7 +62,7 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
             evento.agendaData.minute,
             evento.agendaData.second);
         if (mySelectedEvents[campo] != null) {
-          mySelectedEvents[campo]?.add(MyEvents(
+          mySelectedEvents[campo]?.add(Agenda(
             agendaTitulo: evento.agendaTitulo,
             agendaDesc: evento.agendaDesc,
             agendaCancelado: false,
@@ -71,10 +75,26 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
             agendaPac: evento.agendaPac,
             agendaUuId: evento.agendaUuId,
           ));
+          TimeOfDay time2 = const TimeOfDay(hour: 18, minute: 00);
+//          DateTime dateTimew = DateTime.parse('2021-12-25 11:59');
+          var hour = time2.hour;
+          if (hour == 12) {
+            log('Tarde');
+          } else if (hour == 18) {
+            log('Noite');
+          } else if (hour < 8) {
+            log('Madrugada');
+          } else if (hour < 12) {
+            log('Manhã');
+          } else if (hour > 18) {
+            log('Noite');
+          } else {
+            log('Tarde');
+          }
           _listOfDayEvents(campo);
         } else {
           mySelectedEvents[campo] = [
-            MyEvents(
+            Agenda(
               agendaTitulo: evento.agendaTitulo,
               agendaDesc: evento.agendaDesc,
               agendaCancelado: false,
@@ -93,7 +113,6 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
         setState(() {
           _listOfDayEvents(campo);
         });
-//        log('Data $numero ${campo.toString()}');
       }
       return (dataList);
     }
@@ -108,7 +127,7 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
     super.dispose();
   }
 
-  List<MyEvents> _listOfDayEvents(DateTime dateTime) {
+  List<Agenda> _listOfDayEvents(DateTime dateTime) {
     return mySelectedEvents[dateTime] ?? [];
   }
 
@@ -116,18 +135,17 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
     await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('New Event'),
+              title: const Text('Novo Evento'),
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  buildTextField(
-                      controller: titleController, hint: 'Enter Title'),
+                  buildTextField(controller: titleController, hint: 'Titulo'),
                   const SizedBox(
                     height: 20.0,
                   ),
                   buildTextField(
-                      controller: descpController, hint: 'Enter Description'),
+                      controller: descpController, hint: 'Descrição'),
                 ],
               ),
               actions: [
@@ -150,7 +168,7 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                     } else {
                       setState(() {
                         if (mySelectedEvents[selectedCalendarDate] != null) {
-                          mySelectedEvents[selectedCalendarDate]?.add(MyEvents(
+                          mySelectedEvents[selectedCalendarDate]?.add(Agenda(
                             agendaTitulo: titleController.text,
                             agendaDesc: descpController.text,
                             agendaCancelado: false,
@@ -166,7 +184,7 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                           _listOfDayEvents(selectedCalendarDate!);
                         } else {
                           mySelectedEvents[selectedCalendarDate!] = [
-                            MyEvents(
+                            Agenda(
                               agendaTitulo: titleController.text,
                               agendaDesc: descpController.text,
                               agendaCancelado: false,
@@ -226,6 +244,8 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
       appBar: AppBar(
         title: const Text('Custom Calendar'),
         centerTitle: true,
+        leading:
+            InkWell(onTap: () => {refaz2()}, child: const Icon(Icons.edit)),
         actions: [
           InkWell(
             onTap: () => _showAddEventDialog(),
@@ -236,21 +256,8 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
           )
         ],
       ),
-/*
-      floatingActionButton: FloatingActionButton.extended(
-
-        onPressed: () => _showAddEventDialog(),
-        label: const Text('Add Event'),
-        splashColor: Colors.black,
-//          backgroundColor: Colors.amber,
-        foregroundColor: Colors.black,
-      ),
-*/
-
       body: SafeArea(
         child: Column(
-//          mainAxisAlignment: MainAxisAlignment.start,
-//          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TableCalendar(
               locale: 'pt_BR',
@@ -278,7 +285,6 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                 return (isSameDay(selectedCalendarDate!, currentSelectedDate));
               },
               onDaySelected: (selectedDay, focusedDay) {
-                // as per the documentation currentSelectedDate
                 if (!isSameDay(selectedCalendarDate, selectedDay)) {
                   setState(() {
                     selectedCalendarDate = selectedDay;
@@ -372,8 +378,9 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
   }
 
   tata(selectedDay) {
-    List<MyEvents> jojo = _listOfDayEvents(selectedDay);
-    log(jojo.toString());
+//    log('entrou');
+//    log('Data certa ${selectedDay.toString()}');
+    List<Agenda> jojo = _listOfDayEvents(selectedDay);
     return ListView.builder(
       padding: const EdgeInsets.only(top: 10, right: 2, left: 2, bottom: 10),
       itemCount: jojo.length,
@@ -408,16 +415,13 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                 ),
                 SlidableAction(
                   onPressed: (context) async {
-/*
-
-                                  await apagarAgenda(
-                                      context, value[index].agendaUuId);
-                                  setState(() {
-                                    selectedEvents.clear();
-                                    gerarEvento();
-                                    const Scaffold();
-                                  });
-  */
+                    await apagarAgenda(context, jojo[index].agendaUuId);
+                    refaz(selectedCalendarDate);
+                    setState(() {
+//                                    selectedEvents.clear();
+//                                    gerarEvento();
+                      const Scaffold();
+                    });
                   },
                   backgroundColor: const Color(0xFF0392CF),
                   foregroundColor: Colors.white,
@@ -426,92 +430,92 @@ class _CustomTableCalendarState extends State<CustomTableCalendar> {
                 ),
               ],
             ),
-            child: exibe(jojo, index),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 65,
+              color: const Color(0xFFD6D6D6),
+              child: ListTile(
+                dense: true,
+                onTap: () => {
+                  //      selectedEvents = {},
+                  //      gerarEvento(),
+//                  log(jojo[index].agendaNome),
+                },
+                title: Text(
+                  jojo[index].agendaNome,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: Text(
+                  jojo[index].agendaTitulo,
+                ),
+                leading: Container(
+                  height: 40,
+                  width: 50,
+                  margin: const EdgeInsets.only(top: 0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).highlightColor,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        DateFormat("dd/MM").format(jojo[index].agendaData),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         );
       },
     );
   }
 
-  exibe(value, index) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 65,
-//                                  margin: const EdgeInsets.only(right: 10),
-      color: const Color(0xFFD6D6D6),
-      child: ListTile(
-        dense: true,
-        onTap: () => {
-          //      selectedEvents = {},
-          //      gerarEvento(),
-          log(
-            value[index].agendaNome,
-          ),
-        },
-        title: Text(
-          value[index].agendaNome,
-          style: const TextStyle(
-            fontSize: 16,
-            //                                        color: Colors.blue.shade800,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        subtitle: Text(
-          value[index].agendaTitulo,
-        ),
-        leading: Container(
-          height: 40,
-          width: 50,
-          margin: const EdgeInsets.only(top: 0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).highlightColor,
-            borderRadius: BorderRadius.circular(7),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                DateFormat("dd/MM").format(value[index].agendaData),
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  refaz(selectedCalendarDate) {
+    setState(() {
+      mySelectedEvents = {};
+      lerAgora();
+      var aux = DateFormat("yyyy-MM-dd").format(selectedCalendarDate) +
+          ' 00:00:00.000Z';
+      var aux2 = aux.toString();
+      DateTime teste = DateTime.parse(aux2);
+      selectedCalendarDate = teste;
+      tata(selectedCalendarDate);
+    });
+  }
+
+  refaz2() async {
+    Conecta conectar = Conecta();
+    await conectar.voltaAgenda();
+//    selectedEvents.clear();
+    await lerAgora();
+
+    var aux = DateFormat("yyyy-MM-dd").format(todaysDate) + ' 00:00:00.000Z';
+    var aux2 = aux.toString();
+    DateTime teste = DateTime.parse(aux2);
+    selectedCalendarDate = teste;
+    tata(selectedCalendarDate);
+//    refaz();
   }
 }
 
+apagarAgenda(BuildContext context, uuid) async {
+  Conecta conectar = Conecta();
+  final response = await conectar.cancelAgenda(uuid, true);
+  log('Apagar : $uuid');
+  log('Feito $response');
+}
 
-/*
-
-//          leading: const Icon(Icons.list),
-//            title: Text(jojo[index].eventTitle),
-//            subtitle: Text(jojo[index].eventDescp),
-//          trailing: Text("$index"),
-
-
-
-            ..._listOfDayEvents(_focusedCalendarDate).map(
-              (myEvents) => Expanded(
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.done,
-                    color: Colors.indigo,
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: 8.0,
-                    ),
-                    child: Text(myEvents.agendaTitulo),
-                  ),
-                  subtitle: Text(myEvents.agendaDesc),
-                ),
-              ),
-            ),
-
-            */
+remarcarAgenda(BuildContext context, uuid) {
+  log('Remarcar : $uuid');
+}

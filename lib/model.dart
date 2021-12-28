@@ -1,4 +1,4 @@
-class Eventos {
+class Agenda {
   final String agendaUuId;
   final int agendaPac;
   final String agendaNome;
@@ -11,7 +11,7 @@ class Eventos {
   final bool agendaExcluido;
   final bool agendaRemarcado;
 
-  Eventos({
+  Agenda({
     required this.agendaUuId,
     required this.agendaPac,
     required this.agendaNome,
@@ -25,7 +25,7 @@ class Eventos {
     required this.agendaRemarcado,
   });
 
-  factory Eventos.fromJson(Map<String, dynamic> json) => Eventos(
+  factory Agenda.fromJson(Map<String, dynamic> json) => Agenda(
         agendaUuId: json['agendaUuId'].toString(),
         agendaPac: json['agendaPac'],
         agendaNome: json['agendaNome'],
@@ -53,8 +53,8 @@ class Eventos {
         "agendaRemarcado": agendaRemarcado,
       };
 
-  factory Eventos.fromMap(Map data) {
-    return Eventos(
+  factory Agenda.fromMap(Map data) {
+    return Agenda(
       agendaUuId: data['agendaUuId'],
       agendaPac: data['agendaPac'],
       agendaNome: data['agendaNome'],
@@ -68,35 +68,4 @@ class Eventos {
       agendaTratado: data['agendaTratado'],
     );
   }
-}
-
-class MyEvents {
-  final String agendaUuId;
-  final int agendaPac;
-  final String agendaNome;
-  final String agendaTitulo;
-  final String agendaDesc;
-  final DateTime agendaData;
-  final String agendaHora;
-  final bool agendaCancelado;
-  final bool agendaTratado;
-  final bool agendaExcluido;
-  final bool agendaRemarcado;
-
-  MyEvents({
-    required this.agendaUuId,
-    required this.agendaPac,
-    required this.agendaNome,
-    required this.agendaTitulo,
-    required this.agendaDesc,
-    required this.agendaData,
-    required this.agendaHora,
-    required this.agendaCancelado,
-    required this.agendaExcluido,
-    required this.agendaTratado,
-    required this.agendaRemarcado,
-  });
-
-  @override
-  String toString() => agendaTitulo;
 }
