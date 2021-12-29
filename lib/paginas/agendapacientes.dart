@@ -2,10 +2,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:nova_agenda/conectar.dart';
+import 'package:nova_agenda/services/conectar.dart';
+import 'package:nova_agenda/services/config.dart';
 import 'package:supabase/supabase.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'model.dart';
+import '../model/model.dart';
 
 class AgendaPacientes extends StatefulWidget {
   const AgendaPacientes({Key? key}) : super(key: key);
