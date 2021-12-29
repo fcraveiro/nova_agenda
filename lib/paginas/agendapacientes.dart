@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/conectar.dart';
 import 'package:nova_agenda/services/config.dart';
 import 'package:nova_agenda/services/constantes.dart';

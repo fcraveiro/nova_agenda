@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nova_agenda/paginas/agendapacientes.dart';
-import 'package:nova_agenda/paginas/color.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import '/services/widgets.dart';
 
@@ -20,7 +19,7 @@ class _MenuState extends State<Menu> {
         child: Column(
           children: [
             const SizedBox(
-              height: 40,
+              height: 80,
             ),
             ElevatedButton(
               onPressed: () {
@@ -33,7 +32,7 @@ class _MenuState extends State<Menu> {
               child: txtnu('Agenda de Pacientes', 17, 4),
             ),
             const SizedBox(
-              height: 15,
+              height: 20,
             ),
             ElevatedButton(
               onPressed: () {
@@ -46,17 +45,7 @@ class _MenuState extends State<Menu> {
               child: txtnu('Setup', 17, 4),
             ),
             const SizedBox(
-              height: 15,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const Colorido(),
-                  ),
-                );
-              },
-              child: txtnu('Cores', 17, 4),
+              height: 20,
             ),
           ],
         ),
