@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/conectar.dart';
 import 'package:nova_agenda/services/config.dart';
+import 'package:nova_agenda/services/constantes.dart';
 import 'package:supabase/supabase.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../model/model.dart';
@@ -26,11 +28,22 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
   final titleController = TextEditingController();
   final descpController = TextEditingController();
   CalendarFormat format = CalendarFormat.month;
-
   late Map<DateTime, List<Agenda>> mySelectedEvents;
+  Color cor1 = Colors.red;
+  Color cor2 = Colors.red;
+  Color cor3 = Colors.red;
+  Color cor4 = Colors.red;
+  int value = 0;
 
   @override
   void initState() {
+    log('entrou');
+    cor1 = lerCor('cor1');
+    log(cor1.toString());
+    cor2 = lerCor('cor2');
+    cor3 = lerCor('cor3');
+    cor4 = lerCor('cor4');
+
     selectedCalendarDate = _focusedCalendarDate;
     mySelectedEvents = {};
     lerAgora();
@@ -431,6 +444,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                       Container(
                         width: 15,
                         height: 65,
+//                        color: cor1,
                         color: corDaHora(jojo[index]
                             .agendaHora), // jojo[index].agendaHora == ,
                       ),
@@ -578,6 +592,38 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
       ),
     );
   }
+
+  lerCor(String valor) {
+    String cor = box.read(valor);
+    log(valor);
+    String valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
+    value = int.parse(valueString, radix: 16);
+    log(Color(value).toString());
+    return Color(value).withOpacity(1);
+  }
+
+  corDaHora(agendaHora) {
+    var hour = agendaHora;
+    if (hour == 12) {
+//    log('Tarde');
+      return cor2;
+    } else if (hour == 18) {
+      return cor3;
+//    log('Noite');
+    } else if (hour < 8) {
+//    log('Madrugada');
+      return cor4;
+    } else if (hour < 12) {
+//    log('Manhã');
+      return cor1;
+    } else if (hour > 18) {
+//    log('Noite');
+      return cor3;
+    } else {
+//    log('Tarde');
+      return cor2;
+    }
+  }
 }
 
 cancelarAgenda(BuildContext context, uuid, avisou) async {
@@ -597,27 +643,4 @@ cancelarAgenda(BuildContext context, uuid, avisou) async {
 
 remarcarAgenda(BuildContext context, uuid) {
   log('Remarcar : $uuid');
-}
-
-corDaHora(agendaHora) {
-  var hour = agendaHora;
-  if (hour == 12) {
-//    log('Tarde');
-    return Colors.green.shade700;
-  } else if (hour == 18) {
-//    log('Noite');
-    return Colors.grey.shade700;
-  } else if (hour < 8) {
-//    log('Madrugada');
-    return Colors.black;
-  } else if (hour < 12) {
-//    log('Manhã');
-    return Colors.yellow.shade700;
-  } else if (hour > 18) {
-//    log('Noite');
-    return Colors.grey.shade700;
-  } else {
-//    log('Tarde');
-    return Colors.green.shade700;
-  }
 }

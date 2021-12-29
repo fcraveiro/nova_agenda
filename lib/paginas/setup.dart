@@ -24,14 +24,11 @@ late Color dialogPickerColor;
 late Color dialogSelectColor;
 Color pickerColor = const Color(0xff443a49);
 Color currentColor = const Color(0xff443a49);
-//Color cor = Colors.white;
 Color cor = Colors.white;
 Color cor1 = Colors.white;
 Color cor2 = Colors.white;
 Color cor3 = Colors.white;
 Color cor4 = Colors.white;
-String jose = '';
-int josew = 0;
 int value = 0;
 
 class Setup extends StatefulWidget {
@@ -66,53 +63,18 @@ class _SetupState extends State<Setup> {
       box.write('cor4', cor4.toString());
       log('Cor 4 Vazio');
     }
-
-    String cor = box.read('cor1'.toString());
-    String valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
-    value = int.parse(valueString, radix: 16);
-    cor1 = Color(value).withOpacity(1);
-
-    cor = box.read('cor2'.toString());
-    valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
-    value = int.parse(valueString, radix: 16);
-    cor2 = Color(value).withOpacity(1);
-
-    cor = box.read('cor3'.toString());
-    valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
-    value = int.parse(valueString, radix: 16);
-    cor3 = Color(value).withOpacity(1);
-
-    cor = box.read('cor4'.toString());
-    valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
-    value = int.parse(valueString, radix: 16);
-    cor4 = Color(value).withOpacity(1);
-
-//    jose = box.read('cor1'.toString());
-//    log(jose.toString());
-//    josew = int.parse(jose);
-
-//    String valueString = jose.split('(0x')[1].split(')')[0]; // kind of hacky..
-//    value = int.parse(valueString, radix: 16);
-
-//    Color josew = (value);
-
-/*
-
-
-    cor2 = box.read('cor2');
-    cor3 = box.read('cor3');
-    cor4 = box.read('cor4');
-*/
+    cor1 = lerCor('cor1');
+    cor2 = lerCor('cor2');
+    cor3 = lerCor('cor3');
+    cor4 = lerCor('cor4');
     colunas = box.read('colunas');
     log('Colunas Setup2 $colunas');
     setState(() {
       colunas = box.read('colunas');
     });
-
     screenPickerColor = Colors.blue; // Material blue.
     dialogPickerColor = Colors.red; // Material red.
     dialogSelectColor = const Color(0xFFA239CA); // A purple color
-
     super.initState();
   }
 
@@ -360,5 +322,12 @@ class _SetupState extends State<Setup> {
         ],
       ),
     );
+  }
+
+  lerCor(String valor) {
+    String cor = box.read(valor);
+    String valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
+    value = int.parse(valueString, radix: 16);
+    return Color(value).withOpacity(1);
   }
 }
