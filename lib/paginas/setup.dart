@@ -6,18 +6,6 @@ import '/services/constantes.dart';
 import '/services/widgets.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-/*
-@override
-void initState() {
-  if (box.read('colunas') == null) {
-    box.write('colunas', 2);
-    log('Colunas Setup2 Vazio');
-  }
-  colunas = box.read('colunas');
-  log('Colunas Setup2 $colunas');
-}
-*/
-
 int colunas = 0;
 late Color screenPickerColor;
 late Color dialogPickerColor;
@@ -44,39 +32,38 @@ class Setup extends StatefulWidget {
 class _SetupState extends State<Setup> {
   @override
   void initState() {
-    log('entrou');
+//    log('entrou');
     if (box.read('colunas') == null) {
       box.write('colunas', 2);
-      log('Colunas 2 Vazio');
+//      log('Colunas 2 Vazio');
     }
-
     if (box.read('corDaManha') == null) {
       box.write('corDaManha', corDaTarde.toString());
-      log('Cor 1 Vazio');
+//      log('Cor 1 Vazio');
     }
     if (box.read('corDaTarde') == null) {
       box.write('corDaTarde', corDaTarde.toString());
-      log('Cor 2 Vazio');
+//      log('Cor 2 Vazio');
     }
     if (box.read('corDaNoite') == null) {
       box.write('corDaNoite', corDaNoite.toString());
-      log('Cor 3 Vazio');
+//      log('Cor 3 Vazio');
     }
     if (box.read('corDaMadrugada') == null) {
       box.write('corDaMadrugada', corDaMadrugada.toString());
-      log('Cor 4 Vazio');
+//      log('Cor corDaMadrugada Vazio');
     }
     if (box.read('corDoMarker') == null) {
       box.write('corDoMarker', corDoMarker.toString());
-      log('Cor Maker Vazio');
+//      log('Cor Marker Vazio');
     }
     if (box.read('corSelected') == null) {
       box.write('corSelected', corSelected.toString());
-      log('Cor Selected Vazio');
+//      log('Cor Selected Vazio');
     }
     if (box.read('corHoje') == null) {
       box.write('corHoje', corSelected.toString());
-      log('Cor Hoje Vazio');
+//      log('Cor Hoje Vazio');
     }
 
     corDaManha = lerCor('corDaManha');
@@ -88,7 +75,7 @@ class _SetupState extends State<Setup> {
     corHoje = lerCor('corHoje');
 
     colunas = box.read('colunas');
-    log('Colunas Setup2 $colunas');
+//    log('Colunas Setup2 $colunas');
     setState(() {
       colunas = box.read('colunas');
     });
@@ -115,14 +102,8 @@ class _SetupState extends State<Setup> {
   @override
   Widget build(BuildContext context) {
     colunas = box.read('colunas');
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Setup2'),
-        centerTitle: true,
-        backgroundColor: corDaManha,
-        elevation: 3,
-      ),
+      appBar: appBarra2(context, 'Configuração'),
       body: Container(
         margin: const EdgeInsets.only(top: 15),
         height: MediaQuery.of(context).size.height,
@@ -347,7 +328,7 @@ class _SetupState extends State<Setup> {
         index = index + 1;
         setState(() {
           box.write('colunas', index);
-          log('Gravado Colunas Setup2 $index');
+//          log('Gravado Colunas Setup2 $index');
         });
       },
     );
@@ -383,7 +364,7 @@ class _SetupState extends State<Setup> {
                     {
                       corDaManha = currentColor,
                       box.write('corDaManha', currentColor.toString()),
-                      log('1'),
+//                      log('1'),
                     }
                   else if (tipo == 2)
                     {
@@ -418,7 +399,7 @@ class _SetupState extends State<Setup> {
                 },
               );
               log(currentColor.toString());
-              log('Picked ${pickerColor.toString()}');
+//              log('Picked ${pickerColor.toString()}');
 
               Navigator.of(context).pop();
             },

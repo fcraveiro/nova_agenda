@@ -253,8 +253,6 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
       appBar: AppBar(
         title: const Text('Custom Calendar'),
         centerTitle: true,
-        leading:
-            InkWell(onTap: () => {refaz2()}, child: const Icon(Icons.edit)),
         actions: [
           InkWell(
             onTap: () => _showAddEventDialog(),
@@ -264,6 +262,14 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
             width: 10,
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {refaz2()},
+        backgroundColor: Colors.blue,
+        child: const Icon(
+          Icons.cloud_download_rounded,
+          color: Colors.white,
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -279,7 +285,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
               availableCalendarFormats: const {
                 CalendarFormat.month: 'Mês',
                 CalendarFormat.twoWeeks: '2 Semanas',
-                CalendarFormat.week: 'Semanas',
+                CalendarFormat.week: 'Semana',
               },
               calendarFormat: format,
               onFormatChanged: (CalendarFormat _format) {

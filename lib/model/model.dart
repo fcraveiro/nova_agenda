@@ -1,3 +1,117 @@
+class ClassPaciente {
+  String pacUuId;
+  int pacId;
+  String pacNome;
+  String pacEnde;
+  String pacCity;
+  String pacEst;
+  int pacCep;
+  int pacFone;
+  int pacCel;
+  bool pacZap1;
+  bool pacZap2;
+  bool pacFavorito;
+  bool pacTratando;
+  bool pacAviso1;
+  bool pacAviso2;
+  bool pacAviso3;
+  bool pacAviso4;
+  bool pacAviso5;
+  bool pacAviso6;
+
+  ClassPaciente({
+    required this.pacUuId,
+    required this.pacId,
+    required this.pacNome,
+    required this.pacEnde,
+    required this.pacCity,
+    required this.pacEst,
+    required this.pacCep,
+    required this.pacFone,
+    required this.pacCel,
+    required this.pacZap1,
+    required this.pacZap2,
+    required this.pacFavorito,
+    required this.pacTratando,
+    required this.pacAviso1,
+    required this.pacAviso2,
+    required this.pacAviso3,
+    required this.pacAviso4,
+    required this.pacAviso5,
+    required this.pacAviso6,
+  });
+
+  factory ClassPaciente.fromJson(Map<String, dynamic> map) {
+    return ClassPaciente(
+        pacUuId: map['pacUuId'.toString()],
+        pacId: map['pacId'],
+        pacNome: map['pacNome'.toString()],
+        pacEnde: map['pacEnde'.toString()],
+        pacCity: map['pacCity'.toString()],
+        pacEst: map['pacEst'.toString()],
+        pacCep: map['pacCep'],
+        pacFone: map['pacFone'],
+        pacCel: map['pacCel'],
+        pacZap1: map['pacZap1'],
+        pacZap2: map['pacZap2'],
+        pacFavorito: map['pacFavorito'],
+        pacTratando: map['pacTratando'],
+        pacAviso1: map['pacAviso1'],
+        pacAviso2: map['pacAviso2'],
+        pacAviso3: map['pacAviso3'],
+        pacAviso4: map['pacAviso4'],
+        pacAviso5: map['pacAviso5'],
+        pacAviso6: map['pacAviso6']);
+  }
+
+  Map<String, dynamic> toJson() => {
+        'pacId': pacId,
+        'pacNome': pacNome,
+        'pacEnde': pacEnde,
+        'pacCity': pacCity,
+        'pacEst': pacEst,
+        'pacCep': pacCep,
+        'pacFone': pacFone,
+        'pacCel': pacCel,
+        'pacZap1': pacZap1,
+        'pacZap2': pacZap2,
+        'pacFavorito': pacFavorito,
+        'pacTratando': pacTratando,
+        'pacAviso1': pacAviso1,
+        'pacAviso2': pacAviso2,
+        'pacAviso3': pacAviso3,
+        'pacAviso4': pacAviso4,
+        'pacAviso5': pacAviso5,
+        'pacAviso6': pacAviso6,
+      };
+}
+
+class Historico {
+//  DateTime createdAt;
+  int hisIdPaciente;
+  String hisPathThumb;
+  String hisPathServer;
+  bool hisFoto;
+
+  Historico({
+//    required this.createdAt,
+    required this.hisIdPaciente,
+    required this.hisPathThumb,
+    required this.hisPathServer,
+    required this.hisFoto,
+  });
+
+  factory Historico.fromJson(Map<String, dynamic> map) {
+    return Historico(
+//      createdAt: map['createdAt'.toString()],
+      hisIdPaciente: map['hisIdPaciente'.toString()],
+      hisPathThumb: map['hisPathThumb'.toString()],
+      hisPathServer: map['hisPathServer'.toString()],
+      hisFoto: map['hisFoto'],
+    );
+  }
+}
+
 class Agenda {
   final String agendaUuId;
   final int agendaPac;

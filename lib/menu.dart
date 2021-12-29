@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nova_agenda/paginas/addpacientes.dart';
 import 'package:nova_agenda/paginas/agendapacientes.dart';
+import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import '/services/widgets.dart';
 
@@ -19,7 +21,33 @@ class _MenuState extends State<Menu> {
         child: Column(
           children: [
             const SizedBox(
-              height: 80,
+              height: 120,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Pacientes(),
+                  ),
+                );
+              },
+              child: txtnu('Lista de Pacientes', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AddPaciente(),
+                  ),
+                );
+              },
+              child: txtnu('Adicionar Paciente', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
             ),
             ElevatedButton(
               onPressed: () {

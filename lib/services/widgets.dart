@@ -16,12 +16,23 @@ appBarra(context, String texto) {
             ),
           ),
         },
-        icon: const Icon(Icons.settings),
+        icon: const Icon(
+          Icons.menu,
+          color: Color(0xFF616161),
+        ),
       ),
       const SizedBox(
         width: 10,
       ),
     ],
+  );
+}
+
+appBarra2(context, String texto) {
+  return AppBar(
+    title: Text(texto),
+    centerTitle: true,
+    elevation: 3,
   );
 }
 
