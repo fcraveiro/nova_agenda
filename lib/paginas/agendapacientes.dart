@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+//import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/conectar.dart';
 import 'package:nova_agenda/services/config.dart';
 import 'package:nova_agenda/services/constantes.dart';
@@ -28,20 +29,26 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
   final descpController = TextEditingController();
   CalendarFormat format = CalendarFormat.month;
   late Map<DateTime, List<Agenda>> mySelectedEvents;
-  Color cor1 = Colors.red;
-  Color cor2 = Colors.red;
-  Color cor3 = Colors.red;
-  Color cor4 = Colors.red;
+  Color corDaManha = Colors.red;
+  Color corDaTarde = Colors.red;
+  Color corDaNoite = Colors.red;
+  Color corDaMadrugada = Colors.red;
+  Color corDoMarker = Colors.red;
+  Color corSelected = Colors.red;
+  Color corHoje = Colors.red;
   int value = 0;
 
   @override
   void initState() {
     log('entrou');
-    cor1 = lerCor('cor1');
-    log(cor1.toString());
-    cor2 = lerCor('cor2');
-    cor3 = lerCor('cor3');
-    cor4 = lerCor('cor4');
+    corDaManha = lerCor('corDaManha');
+    log(corDaManha.toString());
+    corDaTarde = lerCor('corDaTarde');
+    corDaNoite = lerCor('corDaNoite');
+    corDaMadrugada = lerCor('corDaMadrugada');
+    corDoMarker = lerCor('corDoMarker');
+    corSelected = lerCor('corSelected');
+    corHoje = lerCor('corHoje');
 
     selectedCalendarDate = _focusedCalendarDate;
     mySelectedEvents = {};
@@ -270,9 +277,9 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
               startingDayOfWeek: StartingDayOfWeek.monday,
               eventLoader: _listOfDayEvents,
               availableCalendarFormats: const {
-                CalendarFormat.month: 'Semana',
-                CalendarFormat.twoWeeks: 'Mês',
-                CalendarFormat.week: '2 Semanas',
+                CalendarFormat.month: 'Mês',
+                CalendarFormat.twoWeeks: '2 Semanas',
+                CalendarFormat.week: 'Semanas',
               },
               calendarFormat: format,
               onFormatChanged: (CalendarFormat _format) {
@@ -314,17 +321,20 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                 ),
                 formatButtonShowsNext: false,
               ),
-              calendarStyle: const CalendarStyle(
+              calendarStyle: CalendarStyle(
                 canMarkersOverflow: true,
                 markerDecoration: BoxDecoration(
-                    color: Color(0xFF757575), shape: BoxShape.circle),
-                todayDecoration: BoxDecoration(
+                  color: corDoMarker,
+                  shape: BoxShape.circle,
+                ),
+//                    color: Color(0xFF757575), shape: BoxShape.circle),
+                todayDecoration: const BoxDecoration(
                   color: Colors.amber,
                 ),
-                selectedDecoration: BoxDecoration(
+                selectedDecoration: const BoxDecoration(
                   color: Colors.pink,
                 ),
-                todayTextStyle: TextStyle(
+                todayTextStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25.0,
                     color: Colors.black),
@@ -334,7 +344,8 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                     margin: const EdgeInsets.all(6.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        color: corSelected.withOpacity(.9),
+//                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Text(
                       date.day.toString(),
@@ -344,7 +355,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                     margin: const EdgeInsets.all(6.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(.4),
+                        color: corHoje.withOpacity(.7),
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Text(
                       date.day.toString(),
@@ -443,7 +454,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                       Container(
                         width: 15,
                         height: 65,
-//                        color: cor1,
+//                        color: corDaManha,
                         color: corDaHora(jojo[index]
                             .agendaHora), // jojo[index].agendaHora == ,
                       ),
@@ -605,22 +616,22 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
     var hour = agendaHora;
     if (hour == 12) {
 //    log('Tarde');
-      return cor2;
+      return corDaTarde;
     } else if (hour == 18) {
-      return cor3;
+      return corDaNoite;
 //    log('Noite');
     } else if (hour < 8) {
 //    log('Madrugada');
-      return cor4;
+      return corDaMadrugada;
     } else if (hour < 12) {
 //    log('Manhã');
-      return cor1;
+      return corDaManha;
     } else if (hour > 18) {
 //    log('Noite');
-      return cor3;
+      return corDaNoite;
     } else {
 //    log('Tarde');
-      return cor2;
+      return corDaTarde;
     }
   }
 }

@@ -25,10 +25,13 @@ late Color dialogSelectColor;
 Color pickerColor = const Color(0xff443a49);
 Color currentColor = const Color(0xff443a49);
 Color cor = Colors.white;
-Color cor1 = Colors.white;
-Color cor2 = Colors.white;
-Color cor3 = Colors.white;
-Color cor4 = Colors.white;
+Color corDaManha = Colors.white;
+Color corDaTarde = Colors.white;
+Color corDaNoite = Colors.white;
+Color corDaMadrugada = Colors.white;
+Color corDoMarker = Colors.white;
+Color corSelected = Colors.white;
+Color corHoje = Colors.white;
 int value = 0;
 
 class Setup extends StatefulWidget {
@@ -47,26 +50,43 @@ class _SetupState extends State<Setup> {
       log('Colunas 2 Vazio');
     }
 
-    if (box.read('cor1') == null) {
-      box.write('cor1', cor2.toString());
+    if (box.read('corDaManha') == null) {
+      box.write('corDaManha', corDaTarde.toString());
       log('Cor 1 Vazio');
     }
-    if (box.read('cor2') == null) {
-      box.write('cor2', cor2.toString());
+    if (box.read('corDaTarde') == null) {
+      box.write('corDaTarde', corDaTarde.toString());
       log('Cor 2 Vazio');
     }
-    if (box.read('cor3') == null) {
-      box.write('cor3', cor3.toString());
+    if (box.read('corDaNoite') == null) {
+      box.write('corDaNoite', corDaNoite.toString());
       log('Cor 3 Vazio');
     }
-    if (box.read('cor4') == null) {
-      box.write('cor4', cor4.toString());
+    if (box.read('corDaMadrugada') == null) {
+      box.write('corDaMadrugada', corDaMadrugada.toString());
       log('Cor 4 Vazio');
     }
-    cor1 = lerCor('cor1');
-    cor2 = lerCor('cor2');
-    cor3 = lerCor('cor3');
-    cor4 = lerCor('cor4');
+    if (box.read('corDoMarker') == null) {
+      box.write('corDoMarker', corDoMarker.toString());
+      log('Cor Maker Vazio');
+    }
+    if (box.read('corSelected') == null) {
+      box.write('corSelected', corSelected.toString());
+      log('Cor Selected Vazio');
+    }
+    if (box.read('corHoje') == null) {
+      box.write('corHoje', corSelected.toString());
+      log('Cor Hoje Vazio');
+    }
+
+    corDaManha = lerCor('corDaManha');
+    corDaTarde = lerCor('corDaTarde');
+    corDaNoite = lerCor('corDaNoite');
+    corDaMadrugada = lerCor('corDaMadrugada');
+    corDoMarker = lerCor('corDoMarker');
+    corSelected = lerCor('corSelected');
+    corHoje = lerCor('corHoje');
+
     colunas = box.read('colunas');
     log('Colunas Setup2 $colunas');
     setState(() {
@@ -100,7 +120,7 @@ class _SetupState extends State<Setup> {
       appBar: AppBar(
         title: const Text('Setup2'),
         centerTitle: true,
-        backgroundColor: cor1,
+        backgroundColor: corDaManha,
         elevation: 3,
       ),
       body: Container(
@@ -187,7 +207,7 @@ class _SetupState extends State<Setup> {
                           width: 25,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: cor1,
+                            color: corDaManha,
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
@@ -200,7 +220,7 @@ class _SetupState extends State<Setup> {
                           width: 25,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: cor2,
+                            color: corDaTarde,
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
@@ -213,7 +233,7 @@ class _SetupState extends State<Setup> {
                           width: 25,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: cor3,
+                            color: corDaNoite,
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
@@ -226,9 +246,78 @@ class _SetupState extends State<Setup> {
                           width: 25,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: cor4,
+                            color: corDaMadrugada,
                             borderRadius: BorderRadius.circular(5),
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            Card(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 3,
+              ),
+              elevation: 0,
+              color: const Color(0xFFD6D6D6),
+              child: ListTile(
+                title: txtro('Cor Agenda\nMaker/Hoje/Selecionado', 14, 4),
+                trailing: Container(
+                  width: 130,
+                  height: 30,
+                  margin: const EdgeInsets.all(0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _showAddEventDialog(5);
+                        },
+                        child: Container(
+                          width: 25,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: corDoMarker,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          _showAddEventDialog(6);
+                        },
+                        child: Container(
+                          width: 25,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: corHoje,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          _showAddEventDialog(7);
+                        },
+                        child: Container(
+                          width: 25,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: corSelected,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 25,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFD6D6D6),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
                     ],
@@ -292,24 +381,39 @@ class _SetupState extends State<Setup> {
                   currentColor = pickerColor,
                   if (tipo == 1)
                     {
-                      cor1 = currentColor,
-                      box.write('cor1', currentColor.toString()),
+                      corDaManha = currentColor,
+                      box.write('corDaManha', currentColor.toString()),
                       log('1'),
                     }
                   else if (tipo == 2)
                     {
-                      cor2 = currentColor,
-                      box.write('cor2', currentColor.toString()),
+                      corDaTarde = currentColor,
+                      box.write('corDaTarde', currentColor.toString()),
                     }
                   else if (tipo == 3)
                     {
-                      cor3 = currentColor,
-                      box.write('cor3', currentColor.toString()),
+                      corDaNoite = currentColor,
+                      box.write('corDaNoite', currentColor.toString()),
                     }
                   else if (tipo == 4)
                     {
-                      cor4 = currentColor,
-                      box.write('cor4', currentColor.toString()),
+                      corDaMadrugada = currentColor,
+                      box.write('corDaMadrugada', currentColor.toString()),
+                    }
+                  else if (tipo == 5)
+                    {
+                      corDoMarker = currentColor,
+                      box.write('corDoMarker', currentColor.toString()),
+                    }
+                  else if (tipo == 6)
+                    {
+                      corHoje = currentColor,
+                      box.write('corHoje', currentColor.toString()),
+                    }
+                  else if (tipo == 7)
+                    {
+                      corSelected = currentColor,
+                      box.write('corSelected', currentColor.toString()),
                     }
                 },
               );
@@ -328,6 +432,6 @@ class _SetupState extends State<Setup> {
     String cor = box.read(valor);
     String valueString = cor.split('(0x')[1].split(')')[0]; // kind of hacky..
     value = int.parse(valueString, radix: 16);
-    return Color(value).withOpacity(1);
+    return Color(value); //.withOpacity(1);
   }
 }
