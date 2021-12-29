@@ -77,22 +77,6 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
             agendaPac: evento.agendaPac,
             agendaUuId: evento.agendaUuId,
           ));
-//          TimeOfDay time2 = const TimeOfDay(hour: 18, minute: 00);
-//          DateTime dateTimew = DateTime.parse('2021-12-25 11:59');
-          var hour = evento.agendaHora;
-          if (hour == 12) {
-            log('Tarde');
-          } else if (hour == 18) {
-            log('Noite');
-          } else if (hour < 8) {
-            log('Madrugada');
-          } else if (hour < 12) {
-            log('Manhã');
-          } else if (hour > 18) {
-            log('Noite');
-          } else {
-            log('Tarde');
-          }
           _listOfDayEvents(campo);
         } else {
           mySelectedEvents[campo] = [
@@ -111,20 +95,6 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
               agendaUuId: evento.agendaUuId,
             )
           ];
-          var hour = evento.agendaHora;
-          if (hour == 12) {
-            log('Tarde');
-          } else if (hour == 18) {
-            log('Noite');
-          } else if (hour < 8) {
-            log('Madrugada');
-          } else if (hour < 12) {
-            log('Manhã');
-          } else if (hour > 18) {
-            log('Noite');
-          } else {
-            log('Tarde');
-          }
           _listOfDayEvents(campo);
         }
         setState(() {
@@ -331,17 +301,17 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                 ),
                 formatButtonShowsNext: false,
               ),
-              calendarStyle: CalendarStyle(
+              calendarStyle: const CalendarStyle(
                 canMarkersOverflow: true,
                 markerDecoration: BoxDecoration(
-                    color: Colors.grey.shade500, shape: BoxShape.circle),
-                todayDecoration: const BoxDecoration(
+                    color: Color(0xFF757575), shape: BoxShape.circle),
+                todayDecoration: BoxDecoration(
                   color: Colors.amber,
                 ),
-                selectedDecoration: const BoxDecoration(
+                selectedDecoration: BoxDecoration(
                   color: Colors.pink,
                 ),
-                todayTextStyle: const TextStyle(
+                todayTextStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25.0,
                     color: Colors.black),
@@ -415,8 +385,8 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
           color: Colors.amber,
           margin: const EdgeInsets.only(
             top: 6,
-            left: 5,
-            right: 5,
+            left: 10,
+            right: 10,
           ),
           child: Slidable(
             groupTag: '1',
@@ -439,18 +409,13 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                 ),
                 SlidableAction(
                   onPressed: (context) async {
-                    await apagarAgenda(context, jojo[index].agendaUuId);
+                    await apagarAgenda(jojo[index].agendaUuId);
                     refaz(selectedCalendarDate);
-                    setState(() {
-//                                    selectedEvents.clear();
-//                                    gerarEvento();
-                      const Scaffold();
-                    });
                   },
                   backgroundColor: const Color(0xFF0392CF),
                   foregroundColor: Colors.white,
                   icon: Icons.delete,
-                  label: 'Apagar',
+                  label: 'Cancelar',
                 ),
               ],
             ),
@@ -465,21 +430,15 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                       Container(
                         width: 15,
                         height: 65,
-//                        color: Colors.blue,
                         color: corDaHora(jojo[index]
                             .agendaHora), // jojo[index].agendaHora == ,
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 25,
+                        width: MediaQuery.of(context).size.width - 35,
                         height: 65,
-//                        color: Colors.amberAccent,
                         child: ListTile(
                           dense: true,
-                          onTap: () => {
-                            //      selectedEvents = {},
-                            //      gerarEvento(),
-//                  log(jojo[index].agendaNome),
-                          },
+                          onTap: () => {log('clicou')},
                           title: Text(
                             jojo[index].agendaNome,
                             style: const TextStyle(
@@ -489,29 +448,6 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
                           ),
                           subtitle: Text(
                             jojo[index].agendaTitulo,
-                          ),
-                          leading: Container(
-                            height: 40,
-                            width: 50,
-                            margin: const EdgeInsets.only(top: 0),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).highlightColor,
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Text(
-                                  DateFormat("dd/MM")
-                                      .format(jojo[index].agendaData),
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                           trailing: Text(
                             jojo[index].agendaHora.toString(),
@@ -546,6 +482,7 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
     Conecta conectar = Conecta();
     await conectar.voltaAgenda();
 //    selectedEvents.clear();
+    mySelectedEvents = {};
     await lerAgora();
 
     var aux = DateFormat("yyyy-MM-dd").format(todaysDate) + ' 00:00:00.000Z';
@@ -555,14 +492,107 @@ class _AgendaPacientesState extends State<AgendaPacientes> {
     tata(selectedCalendarDate);
 //    refaz();
   }
+
+/////////////////////////////    CANCELAR     /////////////////////////////////
+
+  apagarAgenda(uuid) async {
+    await showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Motivo do Cancelamento'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text('O Paciente avisou o Cancelamento'),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      var avisou = false;
+                      await cancelarAgenda(context, uuid, avisou);
+                      Navigator.pop(context);
+                      return;
+                    },
+//                    style: ElevatedButton.styleFrom(
+//                      primary: Colors.green.shade600, // background
+//                      onPrimary: Colors.white, // foreground
+//                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/imagens/nok.png',
+                          width: 25,
+                          height: 25,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+//                        const Text('Não'),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      var avisou = true;
+                      await cancelarAgenda(context, uuid, avisou);
+                      Navigator.pop(context);
+                      return;
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/imagens/ok.png',
+                          width: 25,
+                          height: 25,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+//                        const Text('Sim'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-apagarAgenda(BuildContext context, uuid) async {
+cancelarAgenda(BuildContext context, uuid, avisou) async {
   Conecta conectar = Conecta();
-  final response = await conectar.cancelAgenda(uuid, true);
+  final response = await conectar.cancelAgenda(uuid, avisou);
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Cancelando Agendamento'),
+      duration: Duration(seconds: 2),
+    ),
+  );
   log('Apagar : $uuid');
   log('Feito $response');
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 remarcarAgenda(BuildContext context, uuid) {
   log('Remarcar : $uuid');
@@ -571,22 +601,22 @@ remarcarAgenda(BuildContext context, uuid) {
 corDaHora(agendaHora) {
   var hour = agendaHora;
   if (hour == 12) {
-    log('Tarde');
+//    log('Tarde');
     return Colors.green.shade700;
   } else if (hour == 18) {
-    log('Noite');
+//    log('Noite');
     return Colors.grey.shade700;
   } else if (hour < 8) {
-    log('Madrugada');
+//    log('Madrugada');
     return Colors.black;
   } else if (hour < 12) {
-    log('Manhã');
+//    log('Manhã');
     return Colors.yellow.shade700;
   } else if (hour > 18) {
-    log('Noite');
+//    log('Noite');
     return Colors.grey.shade700;
   } else {
-    log('Tarde');
+//    log('Tarde');
     return Colors.green.shade700;
   }
 }

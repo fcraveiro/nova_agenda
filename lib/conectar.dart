@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:supabase/supabase.dart';
 
 const supabaseUrl = 'https://xrhyhsbetlnzksauwrvi.supabase.co';
@@ -14,7 +13,7 @@ class Conecta {
         .update({'agendaExcluido': true, 'agendaCancelado': situacao})
         .eq('agendaUuId', agendaUuId)
         .execute()
-        .then((value) => log('ok'));
+        .then((value) => {}); // log('ok'));
   }
 
   Future voltaAgenda() async {
@@ -23,6 +22,6 @@ class Conecta {
         .update({'agendaExcluido': false, 'agendaCancelado': false})
         .filter('agendaExcluido', 'eq', true)
         .execute()
-        .then((value) => log('Volta OK'));
+        .then((value) => {}); // log('Resposta ${value.toString()}'));
   }
 }
