@@ -10,7 +10,7 @@ class Conecta {
   // Pacientes
 
   Future<List<ClassPaciente>> getAll() async {
-    log('Leu Pacientes');
+    log('Leu Pacientes 1');
     final response = await client
         .from('pacientes')
         .select()
@@ -43,16 +43,13 @@ class Conecta {
         .execute();
   }
 
-  Future favoritoPaciente(String pacUuId, bool favorito) async {
-    favorito = !favorito;
-    log(favorito.toString());
-    log(pacUuId.toString());
+  favoritoPaciente(String pacUuId, bool favorito) async {
+//    log(favorito.toString());
     await client
         .from('pacientes')
         .update({'pacFavorito': favorito})
         .eq('pacUuId', pacUuId)
-        .execute()
-        .then((value) => {log(value.toString())}); // log('ok'));
+        .execute();
   }
 
   Future deletePaciente(int idPaciente) async {

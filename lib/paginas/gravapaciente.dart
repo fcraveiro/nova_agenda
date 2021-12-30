@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nova_agenda/services/widgets.dart';
 import '/services/constantes.dart';
 import '/model/model.dart';
 import '/services/conectar.dart';
@@ -20,6 +21,7 @@ class _MostraFormPacienteState extends State<GravaPaciente> {
     ClassPaciente form = widget.form;
 
     return Scaffold(
+      appBar: appBarra(context, 'Pacientes'),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 0),

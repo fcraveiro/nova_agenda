@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:nova_agenda/paginas/addpacientes.dart';
 import 'package:nova_agenda/paginas/agendapacientes.dart';
 import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
+import 'package:nova_agenda/services/constantes.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -12,7 +15,56 @@ class Menu extends StatefulWidget {
   _MenuState createState() => _MenuState();
 }
 
+int colunas = 0;
+Color cor = Colors.grey;
+Color corDaManha = Colors.grey;
+Color corDaTarde = Colors.grey;
+Color corDaNoite = Colors.grey;
+Color corDaMadrugada = Colors.grey;
+Color corDoMarker = Colors.grey;
+Color corSelected = Colors.grey;
+Color corHoje = Colors.grey;
+
 class _MenuState extends State<Menu> {
+  @override
+  void initState() {
+    log('entrou');
+    if (box.read('colunas') == null) {
+      box.write('colunas', 2);
+      log('Colunas 2 Vazio');
+    }
+    if (box.read('corDaManha') == null) {
+      box.write('corDaManha', corDaTarde.toString());
+      log('Cor 1 Vazio');
+    }
+    if (box.read('corDaTarde') == null) {
+      box.write('corDaTarde', corDaTarde.toString());
+      log('Cor 2 Vazio');
+    }
+    if (box.read('corDaNoite') == null) {
+      box.write('corDaNoite', corDaNoite.toString());
+      log('Cor 3 Vazio');
+    }
+    if (box.read('corDaMadrugada') == null) {
+      box.write('corDaMadrugada', corDaMadrugada.toString());
+      log('Cor corDaMadrugada Vazio');
+    }
+    if (box.read('corDoMarker') == null) {
+      box.write('corDoMarker', corDoMarker.toString());
+      log('Cor Marker Vazio');
+    }
+    if (box.read('corSelected') == null) {
+      box.write('corSelected', corSelected.toString());
+      log('Cor Selected Vazio');
+    }
+    if (box.read('corHoje') == null) {
+      box.write('corHoje', corSelected.toString());
+      log('Cor Hoje Vazio');
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
