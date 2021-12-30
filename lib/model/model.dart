@@ -112,6 +112,24 @@ class Historico {
   }
 }
 
+/*
+
+  static DateTime agendaDay(t) => t as DateTime;
+            "${agendaDay.year.toString().padLeft(4, '0')}-${agendaDay.month.toString().padLeft(2, '0')}-${agendaDay.day.toString().padLeft(2, '0')}",
+
+
+        agendaDay: DateTime.parse(json["agendaDay"]),
+
+
+    factory Person.fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
+      Map<String, dynamic> toJson() => _$PersonToJson(this);
+
+
+      static DateTime _fromJson(int int) => DateTime.fromMillisecondsSinceEpoch(int);
+      static int _toJson(DateTime time) => time.millisecondsSinceEpoch;
+ static DateTime _rawDateTime(t) => t as DateTime;
+*/
+
 class Agenda {
   final String agendaUuId;
   final int agendaPac;
