@@ -1,12 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:nova_agenda/paginas/addpacientes.dart';
 import 'package:nova_agenda/paginas/agendapacientes.dart';
 import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
-import 'package:nova_agenda/testes/main_hero.dart';
+import 'package:nova_agenda/testes/appbar1.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -132,11 +131,11 @@ class _MenuState extends State<Menu> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const MainHeroAnimationsPage(),
+                    builder: (context) => const MainCollapsingToolbar(),
                   ),
                 );
               },
-              child: txtnu('Sample', 17, 4),
+              child: txtnu('Sliver', 17, 4),
             ),
           ],
         ),

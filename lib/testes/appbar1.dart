@@ -17,21 +17,28 @@ class _MainCollapsingToolbarState extends State<MainCollapsingToolbar> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
-                expandedHeight: 200.0,
+                expandedHeight: 230.0,
                 floating: false,
                 pinned: true,
+                actions: const [
+                  Icon(Icons.menu),
+                  SizedBox(
+                    width: 10,
+                  )
+                ],
                 flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
-                    title: const Text("Collapsing Toolbar",
+                    title: const Text("Cadastro de Pacientes",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                          color: Colors.black,
+                          fontSize: 20.0,
                         )),
-                    background: Image.network(
-                      "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
+                    background: Image.asset(
+                      "assets/imagens/vera1.jpeg",
                       fit: BoxFit.cover,
                     )),
               ),
+              /*
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
                   const TabBar(
@@ -45,10 +52,11 @@ class _MainCollapsingToolbarState extends State<MainCollapsingToolbar> {
                 ),
                 pinned: true,
               ),
+*/
             ];
           },
           body: const Center(
-            child: Text("Sample text"),
+            child: Text("Lista de Pacientes"),
           ),
         ),
       ),
@@ -56,6 +64,7 @@ class _MainCollapsingToolbarState extends State<MainCollapsingToolbar> {
   }
 }
 
+// ignore: unused_element
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this._tabBar);
 
