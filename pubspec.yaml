@@ -25,6 +25,8 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   mask_text_input_formatter: ^2.0.0
   via_cep_flutter: ^0.2.2
+  staggered_grid_view_flutter: ^0.0.4
+  transparent_image: ^2.0.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0

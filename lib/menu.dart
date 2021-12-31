@@ -6,6 +6,7 @@ import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
 import 'package:nova_agenda/testes/appbar1.dart';
+import 'package:nova_agenda/testes/grid.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -136,6 +137,19 @@ class _MenuState extends State<Menu> {
                 );
               },
               child: txtnu('Sliver', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const MyHomePage(),
+                  ),
+                );
+              },
+              child: txtnu('Stage Grid', 17, 4),
             ),
           ],
         ),

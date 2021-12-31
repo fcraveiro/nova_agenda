@@ -129,9 +129,11 @@ class _PacientesState extends State<Pacientes> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 65,
-                  color: Theme.of(context)
+                  color: const Color(0xFFD6D6D6),
+/*                  color: Theme.of(context)
                       .primaryColor
                       .withOpacity(.6), // const Color(0xFFD6D6D6),
+*/
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -191,7 +193,7 @@ class _PacientesState extends State<Pacientes> {
                         },
                         child: SizedBox(
                           width: 50,
-                          height: 50,
+                          height: 65,
                           child: lista[index].pacFavorito
                               ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -205,7 +207,8 @@ class _PacientesState extends State<Pacientes> {
                                         child: FaIcon(
                                           FontAwesomeIcons.solidHeart,
                                           size: 20,
-                                          color: Color(0xFF4DB6AC),
+//                                          color: Color(0xFF4DB6AC),
+                                          color: Colors.teal,
                                         ),
                                       ),
                                     ),
