@@ -6,6 +6,7 @@ import 'package:nova_agenda/paginas/agendapacientes.dart';
 import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
+import 'package:nova_agenda/testes/main_hero.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -126,6 +127,16 @@ class _MenuState extends State<Menu> {
             ),
             const SizedBox(
               height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const MainHeroAnimationsPage(),
+                  ),
+                );
+              },
+              child: txtnu('Sample', 17, 4),
             ),
           ],
         ),

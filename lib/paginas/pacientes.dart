@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nova_agenda/services/conectar.dart';
 import 'package:nova_agenda/services/config.dart';
 import 'package:supabase/supabase.dart';
 import '/services/widgets.dart';
@@ -20,8 +21,11 @@ final client = SupabaseClient(supabaseUrl, supabaseKey);
 List<ClassPaciente> lista = [];
 
 class _PacientesState extends State<Pacientes> {
+  Conecta conectar = Conecta();
+
   @override
   void initState() {
+    lista = [];
     lerAgora();
     setState(() {
       lista;
@@ -30,11 +34,13 @@ class _PacientesState extends State<Pacientes> {
   }
 
   Future<List<ClassPaciente>> lerAgora() async {
+    log('Lendo ....');
     final response = await client
         .from('pacientes')
         .select()
         .order('pacNome', ascending: true)
         .execute();
+    log(lista.toString());
     if (response.error == null) {
       final dataList = response.data as List;
       log(dataList.length.toString());
@@ -78,48 +84,108 @@ class _PacientesState extends State<Pacientes> {
       body: ListView.builder(
         itemCount: lista.length,
         itemBuilder: (__, index) {
-          return ListTile(
-            title: Text(
-              lista[index].pacNome.toString(),
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.2),
+          return Container(
+            height: 75,
+            margin: const EdgeInsets.only(
+              top: 10,
+              left: 5,
+              right: 5,
             ),
-            subtitle: Text(
-              lista[index].pacFone.toString(),
-              style:
-                  const TextStyle(fontFamily: 'RobotoSlab', letterSpacing: 0.8),
-            ),
-//                          onTap: () => teste(post),
-            trailing: GestureDetector(
-              onTap: () => {
-//                log(lista[index].pacFavorito.toString()),
-//                setState(
-//                  () {
-//                                favorito(post.pacUuId, !post.pacFavorito);
-//                                conectar.favoritoPaciente(
-//                                    post.pacUuId, !post.pacFavorito);
-//                  },
-//                )
-              },
-              child: SizedBox(
-                width: 35,
-                height: 35,
-//                              color: Colors.amber,
-                child: CircleAvatar(
-                  child: lista[index].pacFavorito
-                      ? const FaIcon(
-                          FontAwesomeIcons.solidHeart,
-                          size: 20,
-                          color: Colors.teal,
-                        )
-                      : const FaIcon(
-                          FontAwesomeIcons.heart,
-                          size: 20,
-                          color: Colors.teal,
+            child: GestureDetector(
+              onTap: () => mudaTela(lista, index),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 300,
+                          margin: const EdgeInsets.only(left: 12),
+                          child: Text(
+                            lista[index].pacNome,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'RobotoSlab',
+                              letterSpacing: .5,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 12),
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const FaIcon(
+                                FontAwesomeIcons.phoneSquareAlt,
+                                size: 15,
+                                color: Colors.teal,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                lista[index].pacFone.toString(),
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'RobotoSlab',
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () => {
+                        mudaFavorito(index),
+                      },
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: lista[index].pacFavorito
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  SizedBox(
+                                    width: 35,
+                                    height: 35,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      child: FaIcon(
+                                        FontAwesomeIcons.solidHeart,
+                                        size: 20,
+                                        color: Color(0xFF00796B),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: FaIcon(
+                                  FontAwesomeIcons.heart,
+                                  size: 20,
+                                  color: Color(0xFF4DB6AC),
+                                ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -128,127 +194,26 @@ class _PacientesState extends State<Pacientes> {
       ),
     );
   }
+
+  mudaFavorito(index) {
+    setState(() {
+      lista[index].pacFavorito = !lista[index].pacFavorito;
+    });
+    bool favorito = lista[index].pacFavorito;
+    String uuid = lista[index].pacUuId;
+    conectar.favoritoPaciente(uuid, favorito);
+  }
+
+  mudaTela(lista, int index) {
+    log('Vai pra Paciente');
+    log(lista[index].pacNome);
+  }
 }
 
-
+procura() {}
 
 /*
 
-
-import 'dart:developer';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '/services/constantes.dart';
-import '/services/widgets.dart';
-import '/model/model.dart';
-import '/services/conectar.dart';
-
-class Pacientes extends StatefulWidget {
-  const Pacientes({Key? key}) : super(key: key);
-
-  @override
-  _PacientesState createState() => _PacientesState();
-}
-
-int colunas = 1;
-
-class _PacientesState extends State<Pacientes> {
-  Conecta conectar = Conecta();
-
-  @override
-  void initState() {
-    super.initState();
-    if (box.read('colunas') == null) {
-      box.write('colunas', 2);
-      log('Colunas Pacientes Vazio');
-    }
-    colunas = box.read('colunas');
-    log('Colunas Pacientes $colunas');
-//    conectar.getHistorico();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarra(context, 'Pacientes'),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: FutureBuilder(
-          future: conectar.getAll(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<ClassPaciente>> snapshot) {
-            if (snapshot.hasData) {
-              List<ClassPaciente>? posts = snapshot.data;
-
-              return ListView(
-                children: posts!
-                    .map(
-                      (ClassPaciente post) => ListTile(
-                          title: Text(
-                            post.pacNome.toString(),
-                            style: const TextStyle(
-                                fontSize: 13,
-                                fontFamily: 'Nunito',
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.2),
-                          ),
-                          subtitle: Text(
-                            post.pacFone.toString(),
-                            style: const TextStyle(
-                                fontFamily: 'RobotoSlab', letterSpacing: 0.8),
-                          ),
-                          /*
-                        leading: const SizedBox(
-                          width: 25,
-                          height: 25,
-                          child:
-                              CircleAvatar(
-                            child: FaIcon(
-                              FontAwesomeIcons.solidHeart,
-                              size: 14,
-                              color: Colors.teal,
-                            ),
-                          ),
-                        ),
-                        */
-                          onTap: () => teste(post),
-                          trailing: GestureDetector(
-                            onTap: () => {
-                              log(post.pacFavorito.toString()),
-                              setState(() {
-//                                favorito(post.pacUuId, !post.pacFavorito);
-                                conectar.favoritoPaciente(
-                                    post.pacUuId, !post.pacFavorito);
-                              })
-                            },
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-//                              color: Colors.amber,
-                              child: CircleAvatar(
-                                child: post.pacFavorito
-                                    ? const FaIcon(
-                                        FontAwesomeIcons.solidHeart,
-                                        size: 20,
-                                        color: Colors.teal,
-                                      )
-                                    : const FaIcon(
-                                        FontAwesomeIcons.heart,
-                                        size: 20,
-                                        color: Colors.teal,
-                                      ),
-                              ),
-                            ),
-                          )),
-                    )
-                    .toList(),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
       persistentFooterButtons: const [
         Icon(Icons.settings),
         SizedBox(width: 5),
@@ -257,10 +222,8 @@ class _PacientesState extends State<Pacientes> {
           width: 10,
         ),
       ],
-    );
-  }
 
-  teste(ClassPaciente post) {
+  mudaFavorito(ClassPaciente post) {
 //    Navigator.of(context)
 //        .push(MaterialPageRoute(
 //            builder: (context) => Paciente(
@@ -270,93 +233,213 @@ class _PacientesState extends State<Pacientes> {
 //  }
   }
 
-  favorito(String uuid, bool favorito) {
-    conectar.favoritoPaciente(uuid, favorito);
-  }
-}
-
-      persistentFooterButtons: const [
-        Icon(Icons.settings),
-        SizedBox(width: 5),
-        Icon(Icons.exit_to_app),
-        SizedBox(
-          width: 10,
-        ),
-      ],
-
-*/
+        */
 
 
 /*
 
-FutureBuilder(
-          future: conectar.getAll(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<ClassPaciente>> snapshot) {
-            if (snapshot.hasData) {
-//              log(snapshot.toString());
-              List<ClassPaciente>? posts = snapshot.data;
-              return ListView(
-                children: posts!
-                    .map(
-                      (ClassPaciente post) => ListTile(
-                        title: Text(
-                          post.pacNome.toString(),
+          return Container(
+            height: 75,
+            margin: const EdgeInsets.only(
+              top: 10,
+              left: 5,
+              right: 5,
+            ),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 310,
+                        margin: const EdgeInsets.only(left: 12),
+                        child: Text(
+                          lista[index].pacNome,
                           style: const TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'Nunito',
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.2),
-                        ),
-                        subtitle: Text(
-                          post.pacFone.toString(),
-                          style: const TextStyle(
-                              fontFamily: 'RobotoSlab', letterSpacing: 0.8),
-                        ),
-                        /*
-                        leading: const SizedBox(
-                          width: 25,
-                          height: 25,
-                          child:
-                              CircleAvatar(
-                            child: FaIcon(
-                              FontAwesomeIcons.solidHeart,
-                              size: 14,
-                              color: Colors.teal,
-                            ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'RobotoSlab',
+                            letterSpacing: .5,
                           ),
-                        ),
-                        */
-                        onTap: () => teste(post),
-                        trailing: GestureDetector(
-                          onTap: () => favorito(post.pacUuId, post.pacFavorito),
-                          child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: CircleAvatar(
-                              child: post.pacFavorito
-                                  ? const FaIcon(
-                                      FontAwesomeIcons.solidHeart,
-                                      size: 20,
-                                      color: Colors.teal,
-                                    )
-                                  : const FaIcon(
-                                      FontAwesomeIcons.heart,
-                                      size: 20,
-                                      color: Colors.teal,
-                                    ),
-                            ),
-                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    )
-                    .toList(),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-        */
+                      Container(
+                        margin: const EdgeInsets.only(left: 12),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const FaIcon(
+                              FontAwesomeIcons.phoneSquareAlt,
+                              size: 15,
+                              color: Colors.teal,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              lista[index].pacFone.toString(),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'RobotoSlab',
+                                letterSpacing: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () => {
+                      mudaFavorito(index),
+                    },
+                    child: SizedBox(
+                      width: 35,
+                      height: 35,
+                      child: lista[index].pacFavorito
+                          ? const CircleAvatar(
+                              child: FaIcon(
+                                FontAwesomeIcons.solidHeart,
+                                size: 20,
+                                color: Color(0xFF00796B),
+                              ),
+                            )
+                          : const CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: FaIcon(
+                                FontAwesomeIcons.heart,
+                                size: 20,
+                                color: Color(0xFF4DB6AC),
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                ],
+              ),
+            ),
+          );
 
 
+                    return Container(
+            height: 75,
+            margin: const EdgeInsets.only(
+              top: 10,
+              left: 5,
+              right: 5,
+            ),
+            child: GestureDetector(
+              onTap: () => mudaTela(lista, index),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 300,
+                          margin: const EdgeInsets.only(left: 12),
+                          child: Text(
+                            lista[index].pacNome,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'RobotoSlab',
+                              letterSpacing: .5,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 12),
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const FaIcon(
+                                FontAwesomeIcons.phoneSquareAlt,
+                                size: 15,
+                                color: Colors.teal,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                lista[index].pacFone.toString(),
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'RobotoSlab',
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () => {
+                        mudaFavorito(index),
+                      },
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: lista[index].pacFavorito
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  SizedBox(
+                                    width: 35,
+                                    height: 35,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      child: FaIcon(
+                                        FontAwesomeIcons.solidHeart,
+                                        size: 20,
+                                        color: Color(0xFF00796B),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: FaIcon(
+                                  FontAwesomeIcons.heart,
+                                  size: 20,
+                                  color: Color(0xFF4DB6AC),
+                                ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+
+          
+
+          */

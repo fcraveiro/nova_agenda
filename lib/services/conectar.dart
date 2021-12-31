@@ -49,7 +49,8 @@ class Conecta {
         .from('pacientes')
         .update({'pacFavorito': favorito})
         .eq('pacUuId', pacUuId)
-        .execute();
+        .execute()
+        .then((value) => log('Favorito ok'));
   }
 
   Future deletePaciente(int idPaciente) async {
