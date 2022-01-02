@@ -133,25 +133,23 @@ class _PacWhereState extends State<PacWhere> {
                                 pesqNome(value);
                               },
                               decoration: const InputDecoration(
+                                counterText: '',
                                 labelText: 'Nome',
-                                border: OutlineInputBorder(),
-                                suffixIcon: Icon(Icons.clear),
-/*                                prefixIcon: const Icon(Icons.search),
-
-
-                                suffixIcon: _nomeController.text.isEmpty
-                                    ? null // Show nothing if the text field is empty
-                                    : IconButton(
-                                        icon: const Icon(
-                                          Icons.clear,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: _clearTextField,
-                                      ), 
-                                      */
-
-                                // Show the clear button if the text field has something
+//                                labelStyle: TextStyle(
+//                                  color: Color(0xFF6200EE),
+//                                    ),
                               ),
+/*
+                              validator: (value) {
+                                setState(() {
+                                  //log'Nome ok');
+                                  campo = value.toString();
+                                  log(_nomeController.text.toString());
+                                });
+                              
+                              
+                              },
+*/
                             ),
                           ],
                         ),
@@ -277,15 +275,6 @@ class _PacWhereState extends State<PacWhere> {
     });
   }
 
-/*
-  void _clearTextField() {
-    // Clear everything in the text field
-    _nomeController.clear();
-    mostraTodos();
-    // Call setState to update the UI
-    setState(() {});
-  }
-*/
   exibeResultado() {
     if (filteredPacientes.isEmpty) {
       return const Text('vazia');
