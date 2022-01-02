@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+//import 'package:get/get.dart';
 import 'package:nova_agenda/paginas/addpacientes.dart';
 import 'package:nova_agenda/paginas/agendapacientes.dart';
 import 'package:nova_agenda/paginas/pacientes.dart';
@@ -7,6 +8,7 @@ import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
 import 'package:nova_agenda/testes/appbar1.dart';
 import 'package:nova_agenda/testes/grid.dart';
+import 'package:nova_agenda/testes/pacwhere.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -25,6 +27,7 @@ Color corDaMadrugada = Colors.grey;
 Color corDoMarker = Colors.grey;
 Color corSelected = Colors.grey;
 Color corHoje = Colors.grey;
+bool testa = false;
 
 class _MenuState extends State<Menu> {
   @override
@@ -74,9 +77,10 @@ class _MenuState extends State<Menu> {
         child: Column(
           children: [
             const SizedBox(
-              height: 120,
+              height: 60,
             ),
             ElevatedButton(
+              style: const ButtonStyle(),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -150,6 +154,42 @@ class _MenuState extends State<Menu> {
                 );
               },
               child: txtnu('Stage Grid', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const PacWhere(),
+                  ),
+                );
+              },
+              child: txtnu('Where', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton.icon(
+              onPressed: testa ? () {} : null,
+              label: const Text('Teste'),
+              icon: const Icon(
+                Icons.bookmark,
+                size: 16,
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(horizontal: 60, vertical: 6),
+                ),
+                textStyle: MaterialStateProperty.all(
+                  const TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

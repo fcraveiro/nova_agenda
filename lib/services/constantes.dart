@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
-
+/*
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.dark;
   bool get isDarkMode => themeMode == ThemeMode.dark;
@@ -14,6 +14,7 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+*/
 
 const Color kFont = Color(0xFF252435);
 const Color kFontLight = Color(0xFFB4B7BF);
@@ -53,18 +54,51 @@ MaterialColor createMaterialColor(Color color) {
   });
   return MaterialColor(color.value, swatch);
 }
+// Color(0xFFFFAB91)
 
 final box = GetStorage();
 
 class Temas {
   static final light = ThemeData(
-      // ignore: prefer_const_constructors
-      primarySwatch: createMaterialColor(Color(0xFFFFAB91)),
+      primarySwatch: createMaterialColor(
+        const Color(0xFF0D47A1),
+      ),
+
+      //
+      backgroundColor: Colors.pink,
+      //
+      dialogBackgroundColor: Colors.white,
+      // CheckBox
+      toggleableActiveColor: Colors.deepOrange,
+      // AppBar em Brightness.dark
+      cardColor: Colors.yellow,
+      canvasColor: Colors.white,
+      focusColor: Colors.green,
+      indicatorColor: Colors.yellow,
+      hintColor: Colors.white,
+      hoverColor: Colors.red,
+      splashColor: Colors.yellow,
+      selectedRowColor: Colors.yellow,
+      highlightColor: Colors.amber,
+      secondaryHeaderColor: Colors.yellow,
+
+//      textSelectionHandleColor: ,
+//      cursorColor: ,
+//      primaryColor: Colors.amber,
+//      primaryColorBrightness: Colors.red,
+//      accentColor:
+//      textSelectionColor: ,
+//      textSelectionHandleColor: Temas
+
       brightness: Brightness.light);
+
+//        visualDensity: VisualDensity.adaptivePlatformDensity,
 
   static final dark = ThemeData(
       primarySwatch: createMaterialColor(const Color(0xFF212121)),
       brightness: Brightness.dark);
+//        visualDensity: VisualDensity.adaptivePlatformDensity,
+
 }
 
 class ThemeService {
@@ -72,7 +106,6 @@ class ThemeService {
   final _key = 'isDarkMode';
 
   _saveThemeToBox(bool isDarkMode) => _box.write(_key, isDarkMode);
-
   bool _loadThemeFromBox() => _box.read(_key) ?? false;
   ThemeMode get theme => _loadThemeFromBox() ? ThemeMode.dark : ThemeMode.light;
   void switchTheme() {

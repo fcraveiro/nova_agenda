@@ -18,7 +18,7 @@ appBarra(context, String texto) {
         },
         icon: const Icon(
           Icons.menu,
-          color: Color(0xFF616161),
+//          color: Color(0xFF616161),
         ),
       ),
       const SizedBox(
