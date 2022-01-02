@@ -27,6 +27,7 @@ dependencies:
   via_cep_flutter: ^0.2.2
   staggered_grid_view_flutter: ^0.0.4
   transparent_image: ^2.0.0
+  flutter_sparkline: ^0.1.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0

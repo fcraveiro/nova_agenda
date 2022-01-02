@@ -6,9 +6,7 @@ import 'package:nova_agenda/paginas/agendapacientes.dart';
 import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
-import 'package:nova_agenda/testes/appbar1.dart';
 import 'package:nova_agenda/testes/grid.dart';
-import 'package:nova_agenda/testes/pacwhere.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -136,19 +134,6 @@ class _MenuState extends State<Menu> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const MainCollapsingToolbar(),
-                  ),
-                );
-              },
-              child: txtnu('Sliver', 17, 4),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
                     builder: (context) => const MyHomePage(),
                   ),
                 );
@@ -158,19 +143,17 @@ class _MenuState extends State<Menu> {
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const PacWhere(),
-                  ),
-                );
-              },
-              child: txtnu('Where', 17, 4),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+/*
+
             ElevatedButton.icon(
               onPressed: testa ? () {} : null,
               label: const Text('Teste'),
@@ -178,22 +161,12 @@ class _MenuState extends State<Menu> {
                 Icons.bookmark,
                 size: 16,
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 60, vertical: 6),
-                ),
-                textStyle: MaterialStateProperty.all(
-                  const TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-              ),
+              style: ElevatedButton.styleFrom(
+
+                  //               primary: Colors.purple,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 6),
+                  textStyle: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold)),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+            */

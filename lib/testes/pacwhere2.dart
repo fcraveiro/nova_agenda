@@ -8,11 +8,11 @@ import 'package:nova_agenda/services/config.dart';
 import 'package:supabase/supabase.dart';
 import '/model/model.dart';
 
-class Pacientes extends StatefulWidget {
-  const Pacientes({Key? key}) : super(key: key);
+class PacWhere2 extends StatefulWidget {
+  const PacWhere2({Key? key}) : super(key: key);
 
   @override
-  _PacientesState createState() => _PacientesState();
+  _PacWhere2State createState() => _PacWhere2State();
 }
 
 final client = SupabaseClient(supabaseUrl, supabaseKey);
@@ -21,7 +21,7 @@ final TextEditingController _nomeController = TextEditingController();
 List<ClassPaciente> lista = [];
 int selecionados = 0;
 
-class _PacientesState extends State<Pacientes> {
+class _PacWhere2State extends State<PacWhere2> {
   Conecta conectar = Conecta();
 
   @override
