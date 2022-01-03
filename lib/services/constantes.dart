@@ -54,14 +54,18 @@ MaterialColor createMaterialColor(Color color) {
   });
   return MaterialColor(color.value, swatch);
 }
+
 // Color(0xFFFFAB91)
+//const Color(0xFF0D47A1)
+//        const Color(0xff26a69a),
+// Color(0xff546e7a),
 
 final box = GetStorage();
 
 class Temas {
   static final light = ThemeData(
       primarySwatch: createMaterialColor(
-        const Color(0xFF0D47A1),
+        const Color(0xff00695c),
       ),
 
       //

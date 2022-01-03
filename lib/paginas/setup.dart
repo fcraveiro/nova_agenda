@@ -1,4 +1,5 @@
 import 'dart:developer';
+//import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -347,11 +348,24 @@ class _SetupState extends State<Setup> {
       builder: (context) => AlertDialog(
         title: const Text('Pick a color!'),
         content: SingleChildScrollView(
+          /*
           child: BlockPicker(
             useInShowDialog: true,
             pickerColor: currentColor,
             onColorChanged: changeColor,
           ),
+*/
+          child: MaterialPicker(
+            pickerColor: pickerColor,
+            onColorChanged: changeColor,
+          ),
+
+/*
+       child: MultipleChoiceBlockPicker(
+         pickerColors: currentColors,
+         onColorsChanged: changeColors,
+       ),
+*/
         ),
         actions: <Widget>[
           ElevatedButton(

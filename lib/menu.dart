@@ -6,7 +6,9 @@ import 'package:nova_agenda/paginas/agendapacientes.dart';
 import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
+import 'package:nova_agenda/testes/card.dart';
 import 'package:nova_agenda/testes/grid.dart';
+import 'package:nova_agenda/testes/sliver.dart';
 import '/services/widgets.dart';
 
 class Menu extends StatefulWidget {
@@ -142,6 +144,29 @@ class _MenuState extends State<Menu> {
             ),
             const SizedBox(
               height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Sliver(),
+                  ),
+                );
+              },
+              child: txtnu('Sliver', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const CadHome(),
+                  ),
+                );
+              },
+              child: txtnu('Card', 17, 4),
             ),
           ],
         ),
