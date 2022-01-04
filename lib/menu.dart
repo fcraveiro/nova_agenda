@@ -7,6 +7,7 @@ import 'package:nova_agenda/paginas/pacientes.dart';
 import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/constantes.dart';
 import 'package:nova_agenda/testes/card.dart';
+import 'package:nova_agenda/testes/gravar.dart';
 import 'package:nova_agenda/testes/grid.dart';
 import 'package:nova_agenda/testes/sliver.dart';
 import '/services/widgets.dart';
@@ -163,6 +164,19 @@ class _MenuState extends State<Menu> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const CadHome(),
+                  ),
+                );
+              },
+              child: txtnu('Card', 17, 4),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Gravar(),
                   ),
                 );
               },

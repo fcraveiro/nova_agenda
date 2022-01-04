@@ -1,4 +1,5 @@
 import 'package:nova_agenda/model/model.dart';
+//import 'package:nova_agenda/paginas/setup.dart';
 import 'package:nova_agenda/services/config.dart';
 import 'package:supabase/supabase.dart';
 import 'dart:developer';
@@ -98,5 +99,12 @@ class Conecta {
         .filter('agendaExcluido', 'eq', true)
         .execute()
         .then((value) => {}); // log('Resposta ${value.toString()}'));
+  }
+
+  Future addPaciente2(campos) async {
+    Copia pacientes = campos;
+    Map<String, dynamic> pacientesJson = pacientes.toJson();
+    log(pacientesJson.toString());
+    await client.from('pacientes').insert(pacientesJson).execute();
   }
 }

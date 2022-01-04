@@ -41,7 +41,7 @@ class _PacWhere2State extends State<PacWhere2> {
     final response = await client
         .from('pacientes')
         .select()
-        .order('pacNome', ascending: true)
+//        .order('pacNome', ascending: true)
         .execute();
     log(lista.toString());
     if (response.error == null) {
@@ -318,7 +318,7 @@ class _PacWhere2State extends State<PacWhere2> {
   mostraTodos() {
     setState(() {
       filteredPacientes = lista;
-      selecionados = filteredPacientes.length;
+      selecionados = lista.length;
     });
   }
 
